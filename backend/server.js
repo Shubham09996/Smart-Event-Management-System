@@ -27,7 +27,7 @@ const connectDB = async () => {
 connectDB();
 
 app.use(cors({
-  origin: 'http://localhost:5174',
+  origin: ['http://localhost:5174', 'https://smart-event-management-system.vercel.app'],
   credentials: true,
 }));
 app.use(express.json({ limit: '50mb' })); // Increased limit for JSON body
