@@ -151,7 +151,7 @@ const AdminProfile = () => {
                 name="name"
                 value={profile.name}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 rounded-lg bg-[#334155] text-white border border-gray-600 focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none"
               />
               <motion.input
                 initial={{ opacity: 0, y: 10 }}
@@ -161,7 +161,7 @@ const AdminProfile = () => {
                 name="email"
                 value={profile.email}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 rounded-lg bg-[#334155] text-white border border-gray-600 focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none"
               />
               {/* Role is not editable by user, only by admin through ManageUsers */}
               <motion.p
@@ -181,7 +181,7 @@ const AdminProfile = () => {
                 placeholder="New Password (optional)"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-[#334155] text-white border border-gray-600 focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none"
               />
               <motion.input
                 initial={{ opacity: 0, y: 10 }}
@@ -192,7 +192,7 @@ const AdminProfile = () => {
                 placeholder="Confirm New Password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-[#334155] text-white border border-gray-600 focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none"
               />
             </>
           ) : (

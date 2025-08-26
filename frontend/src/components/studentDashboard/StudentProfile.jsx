@@ -240,14 +240,14 @@ const StudentProfile = () => {
                 name="name"
                 value={profile.name}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 rounded-lg bg-[#334155] text-white border border-gray-600 focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none"
               />
               <input
                 type="email"
                 name="email"
                 value={profile.email}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 rounded-lg bg-[#334155] text-white border border-gray-600 focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none"
               />
               {/* Role is not editable by user, but can be displayed */}
               <p className="text-gray-400 text-sm">Role: <span className="font-medium text-white">{profile.role}</span></p>
@@ -259,7 +259,7 @@ const StudentProfile = () => {
                     name="gender"
                     value={profile.gender}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 rounded-lg bg-[#334155] text-white border border-gray-600 focus:outline-none"
+                    className="w-full px-3 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none"
                   >
                     <option value="">Select Gender</option>
                     <option value="Male">Male</option>
@@ -273,7 +273,7 @@ const StudentProfile = () => {
                     placeholder="Roll Number"
                     value={profile.rollNo}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 rounded-lg bg-[#334155] text-white border border-gray-600 focus:outline-none"
+                    className="w-full px-3 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none"
                   />
                   <input
                     type="text"
@@ -281,7 +281,7 @@ const StudentProfile = () => {
                     placeholder="Department"
                     value={profile.department}
                     onChange={handleInputChange}
-                    className="w-full px-3 py-2 rounded-lg bg-[#334155] text-white border border-gray-600 focus:outline-none"
+                    className="w-full px-3 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none"
                   />
                 </>
               )}
@@ -292,7 +292,7 @@ const StudentProfile = () => {
                   placeholder="Society Name"
                   value={profile.societyName}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 rounded-lg bg-[#334155] text-white border border-gray-600 focus:outline-none"
+                  className="w-full px-3 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none"
                 />
               )}
 
@@ -303,7 +303,7 @@ const StudentProfile = () => {
                 placeholder="New Password (optional)"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-[#334155] text-white border border-gray-600 focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none"
               />
               <input
                 type="password"
@@ -311,7 +311,7 @@ const StudentProfile = () => {
                 placeholder="Confirm New Password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg bg-[#334155] text-white border border-gray-600 focus:outline-none"
+                className="w-full px-3 py-2 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none"
               />
             </motion.div>
           ) : (

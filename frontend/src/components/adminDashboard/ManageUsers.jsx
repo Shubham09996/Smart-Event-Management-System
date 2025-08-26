@@ -229,9 +229,9 @@ const ManageUsers = ({ users, onUserUpdated, onUserDeleted, currentAdminId }) =>
         {editModalOpen && editingUser && (
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.6 }}
+            animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black z-40"
+            className="fixed inset-0 bg-black/75 z-40 flex items-center justify-center"
             onClick={() => setEditModalOpen(false)}
           >
             <motion.div
@@ -239,70 +239,69 @@ const ManageUsers = ({ users, onUserUpdated, onUserDeleted, currentAdminId }) =>
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 80, scale: 0.95 }}
               transition={{ duration: 0.3 }}
-              className="fixed inset-0 z-50 flex items-center justify-center"
+              className="relative w-full max-w-lg rounded-2xl shadow-2xl p-6 bg-[#1e293b] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
             >
-              <div className="bg-[#1e293b] w-full max-w-lg rounded-2xl shadow-2xl p-6 relative">
-                <button
-                  onClick={() => setEditModalOpen(false)}
-                  className="absolute top-3 right-3 text-gray-400 hover:text-white"
+              <button
+                onClick={() => setEditModalOpen(false)}
+                className="absolute top-3 right-3 text-gray-400 hover:text-white"
+              >
+                <X size={20} />
+              </button>
+              <motion.h2
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.1 }}
+                className="text-xl font-semibold text-white mb-4"
+              >
+                Edit User
+              </motion.h2>
+              <form onSubmit={handleUpdateSubmit} className="space-y-4">
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="User Name"
+                  value={editingUser.name}
+                  onChange={(e) => setEditingUser({ ...editingUser, name: e.target.value })}
+                  required
+                  className="w-full p-3 rounded-lg bg-gray-800 text-white outline-none border border-gray-700 focus:border-purple-500"
+                />
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="User Email"
+                  value={editingUser.email}
+                  onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
+                  required
+                  className="w-full p-3 rounded-lg bg-gray-800 text-white outline-none border border-gray-700 focus:border-purple-500"
+                />
+                <select
+                  name="role"
+                  value={editingUser.role}
+                  onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value })}
+                  required
+                  className="w-full p-3 rounded-lg bg-gray-800 text-white outline-none border border-gray-700 focus:border-purple-500"
                 >
-                  <X size={20} />
-                </button>
-                <motion.h2
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: 0.1 }}
-                  className="text-xl font-semibold text-white mb-4"
+                  <option value="">Select Role</option>
+                  <option value="admin">Admin</option>
+                  <option value="organizer">Organizer</option>
+                  <option value="student">Student</option>
+                </select>
+
+                {errorUpdate && <p className="text-red-500 text-sm">Error: {errorUpdate}</p>}
+                {successUpdate && <p className="text-green-500 text-sm">User updated successfully!</p>}
+
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                  type="submit"
+                  disabled={loadingUpdate}
+                  className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-medium shadow-md disabled:opacity-50"
                 >
-                  Edit User
-                </motion.h2>
-                <form onSubmit={handleUpdateSubmit} className="space-y-4">
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="User Name"
-                    value={editingUser.name}
-                    onChange={(e) => setEditingUser({ ...editingUser, name: e.target.value })}
-                    required
-                    className="w-full p-3 rounded-lg bg-gray-800 text-white outline-none border border-gray-700 focus:border-purple-500"
-                  />
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="User Email"
-                    value={editingUser.email}
-                    onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
-                    required
-                    className="w-full p-3 rounded-lg bg-gray-800 text-white outline-none border border-gray-700 focus:border-purple-500"
-                  />
-                  <select
-                    name="role"
-                    value={editingUser.role}
-                    onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value })}
-                    required
-                    className="w-full p-3 rounded-lg bg-gray-800 text-white outline-none border border-gray-700 focus:border-purple-500"
-                  >
-                    <option value="">Select Role</option>
-                    <option value="admin">Admin</option>
-                    <option value="organizer">Organizer</option>
-                    <option value="student">Student</option>
-                  </select>
-
-                  {errorUpdate && <p className="text-red-500 text-sm">Error: {errorUpdate}</p>}
-                  {successUpdate && <p className="text-green-500 text-sm">User updated successfully!</p>}
-
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                    type="submit"
-                    disabled={loadingUpdate}
-                    className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-medium shadow-md disabled:opacity-50"
-                  >
-                    {loadingUpdate ? "Updating..." : "Update User"}
-                  </motion.button>
-                </form>
-              </div>
+                  {loadingUpdate ? "Updating..." : "Update User"}
+                </motion.button>
+              </form>
             </motion.div>
           </motion.div>
         )}

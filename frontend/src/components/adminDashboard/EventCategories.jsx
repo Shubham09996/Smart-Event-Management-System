@@ -303,9 +303,9 @@ const EventCategories = ({ categories, onCategoryCreated, onCategoryUpdated, onC
         {editModalOpen && editingCategory && (
           <motion.div
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.6 }}
+            animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black z-40"
+            className="fixed inset-0 bg-black/75 z-40 flex items-center justify-center"
             onClick={() => setEditModalOpen(false)}
           >
             <motion.div
@@ -313,49 +313,48 @@ const EventCategories = ({ categories, onCategoryCreated, onCategoryUpdated, onC
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 80, scale: 0.95 }}
               transition={{ duration: 0.3 }}
-              className="fixed inset-0 z-50 flex items-center justify-center"
+              className="relative w-full max-w-lg rounded-2xl shadow-2xl p-6 bg-[#1e293b] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
             >
-              <div className="bg-[#1e293b] w-full max-w-lg rounded-2xl shadow-2xl p-6 relative">
-                <button
-                  onClick={() => setEditModalOpen(false)}
-                  className="absolute top-3 right-3 text-gray-400 hover:text-white"
-                >
-                  <X size={20} />
-                </button>
-                <motion.h2
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: 0.1 }}
-                  className="text-xl font-semibold text-white mb-4"
-                >
-                  Edit Category
-                </motion.h2>
-                <form onSubmit={handleUpdateCategory} className="space-y-4">
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Category Name"
-                    value={editingCategory.name}
-                    onChange={(e) => setEditingCategory({ ...editingCategory, name: e.target.value })}
-                    required
-                    className="w-full p-3 rounded-lg bg-gray-800 text-white outline-none border border-gray-700 focus:border-purple-500"
-                  />
+              <button
+                onClick={() => setEditModalOpen(false)}
+                className="absolute top-3 right-3 text-gray-400 hover:text-white"
+              >
+                <X size={20} />
+              </button>
+              <motion.h2
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.1 }}
+                className="text-xl font-semibold text-white mb-4"
+              >
+                Edit Category
+              </motion.h2>
+              <form onSubmit={handleUpdateCategory} className="space-y-4">
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Category Name"
+                  value={editingCategory.name}
+                  onChange={(e) => setEditingCategory({ ...editingCategory, name: e.target.value })}
+                  required
+                  className="w-full p-3 rounded-lg bg-gray-800 text-white outline-none border border-gray-700 focus:border-purple-500"
+                />
 
-                  {updateError && <p className="text-red-500 text-sm mt-2">Error: {updateError}</p>}
-                  {updateSuccess && <p className="text-green-500 text-sm mt-2">Category updated successfully!</p>}
+                {updateError && <p className="text-red-500 text-sm mt-2">Error: {updateError}</p>}
+                {updateSuccess && <p className="text-green-500 text-sm mt-2">Category updated successfully!</p>}
 
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                    type="submit"
-                    disabled={updateLoading}
-                    className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-medium shadow-md disabled:opacity-50"
-                  >
-                    {updateLoading ? "Updating..." : "Update Category"}
-                  </motion.button>
-                </form>
-              </div>
+                <motion.button
+                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                  type="submit"
+                  disabled={updateLoading}
+                  className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-medium shadow-md disabled:opacity-50"
+                >
+                  {updateLoading ? "Updating..." : "Update Category"}
+                </motion.button>
+              </form>
             </motion.div>
           </motion.div>
         )}

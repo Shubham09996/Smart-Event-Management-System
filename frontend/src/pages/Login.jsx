@@ -31,7 +31,7 @@ export default function Login() {
       } else if (data.role === "organizer") {
         navigate("/organizer");
       } else if (data.role === "admin") {
-        navigate("/admin-dashboard");
+        navigate("/admin");
       }
     } catch (err) {
       setError(err.response && err.response.data.message ? err.response.data.message : err.message);

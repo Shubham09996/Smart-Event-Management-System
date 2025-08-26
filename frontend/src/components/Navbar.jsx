@@ -22,14 +22,20 @@ export default function Navbar() {
 
   const handleProfileView = () => {
     setShowProfileMenu(false);
-    if (user.role === "admin") {
-      navigate("/admin?page=profile");
-    } else if (user.role === "organizer") {
-      navigate("/organizer?page=profile");
-    } else if (user.role === "student") {
-      navigate("/student?page=profile"); // Corrected to profile page
-    } else {
-      navigate("/login");
+    navigate(getDashboardPath(user?.role));
+  };
+
+  // Helper function to get dashboard path based on role
+  const getDashboardPath = (role) => {
+    switch (role) {
+      case "admin":
+        return "/admin";
+      case "organizer":
+        return "/organizer";
+      case "student":
+        return "/student";
+      default:
+        return "/login"; // Fallback or a generic dashboard if roles aren't defined
     }
   };
 
@@ -99,9 +105,22 @@ export default function Navbar() {
           </motion.li>
         ))}
 
-        {isAuthenticated ? (
+        {isAuthenticated && user && (
           <motion.li
             custom={navLinks.length}
+            initial="hidden"
+            animate="visible"
+            variants={navItemVariants}
+          >
+            <Link to={getDashboardPath(user.role)} className="hover:text-white transition">
+              Dashboard
+            </Link>
+          </motion.li>
+        )}
+
+        {isAuthenticated ? (
+          <motion.li
+            custom={navLinks.length + (isAuthenticated && user ? 1 : 0)}
             initial="hidden"
             animate="visible"
             variants={navItemVariants}
@@ -141,22 +160,28 @@ export default function Navbar() {
         ) : (
           <>
             <motion.li
-              custom={navLinks.length}
+              custom={navLinks.length + (isAuthenticated && user ? 1 : 0)}
               initial="hidden"
               animate="visible"
               variants={navItemVariants}
             >
-              <Link to="/login" className="hover:text-white transition hover:text-primary font-semibold">
+              <Link
+                to="/login"
+                className="hover:text-white transition"
+              >
                 Login
               </Link>
             </motion.li>
             <motion.li
-              custom={navLinks.length + 1}
+              custom={navLinks.length + 1 + (isAuthenticated && user ? 1 : 0)}
               initial="hidden"
               animate="visible"
               variants={navItemVariants}
             >
-              <Link to="/signup" className="hover:text-white transition hover:text-primary font-semibold">
+              <Link
+                to="/signup"
+                className="hover:text-white transition"
+              >
                 Sign Up
               </Link>
             </motion.li>
@@ -204,19 +229,37 @@ export default function Navbar() {
                 </motion.li>
               ))}
 
-              {isAuthenticated ? (
+              {isAuthenticated && user && (
                 <motion.li
                   custom={navLinks.length}
                   initial="hidden"
                   animate="visible"
                   variants={navItemVariants}
                 >
-                  <button
-                    onClick={() => {handleProfileView(); setMobileMenuOpen(false);}}
+                  <Link
+                    to={getDashboardPath(user?.role)}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block py-2 text-lg hover:text-white transition"
+                  >
+                    Dashboard
+                  </Link>
+                </motion.li>
+              )}
+
+              {isAuthenticated ? (
+                <motion.li
+                  custom={navLinks.length + (isAuthenticated && user ? 1 : 0)}
+                  initial="hidden"
+                  animate="visible"
+                  variants={navItemVariants}
+                >
+                  <Link
+                    to={getDashboardPath(user?.role)} // Profile link goes to dashboard
+                    onClick={() => setMobileMenuOpen(false)}
                     className="flex items-center gap-2 w-full text-left py-2 text-lg text-gray-300 hover:text-white"
                   >
                     <User2 size={20} /> Profile
-                  </button>
+                  </Link>
                   <button
                     onClick={() => {handleLogout(); setMobileMenuOpen(false);}}
                     className="flex items-center gap-2 w-full text-left py-2 text-lg text-red-400 hover:text-white"
@@ -227,7 +270,7 @@ export default function Navbar() {
               ) : (
                 <>
                   <motion.li
-                    custom={navLinks.length}
+                    custom={navLinks.length + (isAuthenticated && user ? 1 : 0)}
                     initial="hidden"
                     animate="visible"
                     variants={navItemVariants}
@@ -235,13 +278,13 @@ export default function Navbar() {
                     <Link
                       to="/login"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block py-2 text-lg hover:text-white transition hover:text-primary font-semibold"
+                      className="block py-2 text-lg hover:text-white transition"
                     >
                       Login
                     </Link>
                   </motion.li>
                   <motion.li
-                    custom={navLinks.length + 1}
+                    custom={navLinks.length + 1 + (isAuthenticated && user ? 1 : 0)}
                     initial="hidden"
                     animate="visible"
                     variants={navItemVariants}
@@ -249,7 +292,7 @@ export default function Navbar() {
                     <Link
                       to="/signup"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block py-2 text-lg hover:text-white transition hover:text-primary font-semibold"
+                      className="block py-2 text-lg hover:text-white transition"
                     >
                       Sign Up
                     </Link>
