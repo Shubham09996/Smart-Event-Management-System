@@ -71,12 +71,12 @@ const Sidebar = ({ active }) => {
           isActive={active === "notifications"}
           page="notifications"
         />
-        {/* <NavItem
+        <NavItem
           icon={User2}
           label="Profile"
           isActive={active === "profile"}
-          onClick={() => setActivePage("profile")}
-        /> */}
+          page="profile"
+        />
       </nav>
 
       {/* Bottom Section */}

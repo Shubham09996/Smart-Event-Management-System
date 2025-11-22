@@ -22,7 +22,7 @@ export default function Navbar() {
 
   const handleProfileView = () => {
     setShowProfileMenu(false);
-    navigate(getDashboardPath(user?.role));
+    navigate(`${getDashboardPath(user?.role)}?page=profile`);
   };
 
   // Helper function to get dashboard path based on role
@@ -254,7 +254,7 @@ export default function Navbar() {
                   variants={navItemVariants}
                 >
                   <Link
-                    to={getDashboardPath(user?.role)} // Profile link goes to dashboard
+                    to={`${getDashboardPath(user?.role)}?page=profile`} // Profile link goes to dashboard profile page
                     onClick={() => setMobileMenuOpen(false)}
                     className="flex items-center gap-2 w-full text-left py-2 text-lg text-gray-300 hover:text-white"
                   >

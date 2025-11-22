@@ -99,7 +99,7 @@ const PendingApprovals = ({ pendingEvents, onEventApproved, onEventRejected }) =
               {/* Left Side: Event Details */}
               <div>
                 <p className="text-white font-semibold">{event.title}</p>
-                <p className="text-gray-400 text-sm">Organizer: {event.organizer.name}</p>
+                <p className="text-gray-400 text-sm">Organizer: {event.organizer?.name || 'N/A'}</p>
                 <span className="inline-block mt-1 px-2 py-0.5 text-xs font-medium bg-yellow-500/20 text-yellow-400 rounded-full">
                   Pending
                 </span>

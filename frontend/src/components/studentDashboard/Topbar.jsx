@@ -1,7 +1,38 @@
-import { Bell, Search } from "lucide-react";
+import { Bell, Search, UserRound, LogOut } from "lucide-react";
 import { motion } from "framer-motion";
+import { useRef, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const Topbar = () => {
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+  const navigate = useNavigate();
+  const { user, logout } = useAuth(); // Get user and logout from AuthContext
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleProfileClick = () => {
+    navigate("/student?page=profile");
+    setShowDropdown(false);
+  };
+
+  const handleLogout = () => {
+    logout(); // Call logout from AuthContext
+    navigate("/login");
+    setShowDropdown(false);
+  };
+
   return (
     <motion.div
       className="sticky top-0 z-40 backdrop-blur bg-[#0b1220]/80 border-b border-white/5"
@@ -35,14 +66,44 @@ const Topbar = () => {
               3
             </span>
           </motion.div>
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold">
-              AJ
+          <div className="relative" ref={dropdownRef}>
+            <div
+              className="flex items-center gap-2 cursor-pointer"
+              onClick={() => setShowDropdown(!showDropdown)}
+            >
+              <img
+                src={user?.profilePicture || "https://i.pravatar.cc/150?img=68"}
+                alt="Profile"
+                className="h-8 w-8 rounded-full object-cover border-2 border-indigo-500"
+              />
+              <div>
+                <p className="text-sm text-white font-medium">{user?.name || "Student"}</p>
+                <p className="text-xs text-slate-400">{user?.email || "student@example.com"}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm text-white font-medium">Alex Johnson</p>
-              <p className="text-xs text-slate-400">alex@university.edu</p>
-            </div>
+
+            {showDropdown && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.2 }}
+                className="absolute right-0 mt-2 w-48 bg-[#1a1a24] rounded-xl shadow-lg border border-gray-700 z-50"
+              >
+                <button
+                  onClick={handleProfileClick}
+                  className="flex items-center gap-2 w-full px-4 py-3 text-sm text-white hover:bg-white/5 transition rounded-t-xl"
+                >
+                  <UserRound size={18} /> Profile
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-2 w-full px-4 py-3 text-sm text-red-400 hover:bg-red-400/10 transition rounded-b-xl"
+                >
+                  <LogOut size={18} /> Logout
+                </button>
+              </motion.div>
+            )}
           </div>
         </div>
       </div>

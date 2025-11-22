@@ -2,37 +2,50 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Pencil, Save, Upload } from "lucide-react";
 import api from "../../utils/api"; // Import the API instance
+import { useAuth } from "../../context/AuthContext"; // Import useAuth hook
 
 const AdminProfile = () => {
+  const { user, login } = useAuth(); // Get user and login from AuthContext
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
     name: "",
     email: "",
     role: "",
-    // avatar: "https://i.pravatar.cc/150?img=5", // Remove avatar for now
+    profilePicture: "", // Initialize with an empty string
   });
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
 
   useEffect(() => {
-    const userInfo = localStorage.getItem("userInfo");
-    if (userInfo) {
-      const user = JSON.parse(userInfo);
+    if (user) {
       setProfile({
         name: user.name,
         email: user.email,
         role: user.role,
-        // avatar: user.avatar || "https://i.pravatar.cc/150?img=5",
+        profilePicture: user.profilePicture || "https://i.pravatar.cc/150?img=68", // Set default if no picture
       });
     }
-  }, []);
+  }, [user]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setProfile((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfile((prev) => ({ ...prev, profilePicture: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleUpdateProfile = async () => {
@@ -46,29 +59,34 @@ const AdminProfile = () => {
     setSuccess(false);
 
     try {
-      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      const token = userInfo ? userInfo.token : null;
-
-      if (!token) {
-        throw new Error("User not authenticated");
-      }
-
       const config = {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user.token}`,
           "Content-Type": "application/json",
         },
       };
 
-      const updatedData = { name: profile.name, email: profile.email };
+      let updatedProfilePicture = profile.profilePicture;
+      if (imageFile) {
+        // Assuming uploadImage function handles base64 string or FormData
+        // You might need to adjust this based on your backend's uploadImage implementation
+        const result = await api.post("/upload", { image: profile.profilePicture }, config); // Example upload route
+        updatedProfilePicture = result.data.secure_url; // Adjust based on your API response
+      }
+
+      const updatedData = {
+        name: profile.name,
+        email: profile.email,
+        profilePicture: updatedProfilePicture,
+      };
       if (password) {
         updatedData.password = password;
       }
 
       const { data } = await api.put("/users/profile", updatedData, config);
 
-      localStorage.setItem("userInfo", JSON.stringify(data)); // Update localStorage with new token/data
-      setProfile({ name: data.name, email: data.email, role: data.role });
+      login(data); // Update user in AuthContext
+      setProfile({ name: data.name, email: data.email, role: data.role, profilePicture: data.profilePicture });
       setPassword("");
       setConfirmPassword("");
       setSuccess(true);
@@ -115,21 +133,21 @@ const AdminProfile = () => {
       </motion.div>
 
       <div className="flex items-center gap-6">
-        {/* Avatar Upload (functionality not implemented in backend) */}
-        {/* <div className="relative">
+        {/* Avatar Upload */}
+        <div className="relative">
           <img
-            src={profile.avatar}
-            alt="Admin"
+            src={profile.profilePicture}
+            alt="Admin Profile"
             className="w-24 h-24 rounded-full border-4 border-purple-500 object-cover"
           />
           {isEditing && (
             <label
-              htmlFor="avatarUpload"
+              htmlFor="profilePictureUpload"
               className="absolute bottom-0 right-0 bg-purple-600 p-2 rounded-full cursor-pointer hover:bg-purple-700"
             >
               <Upload size={16} className="text-white" />
               <input
-                id="avatarUpload"
+                id="profilePictureUpload"
                 type="file"
                 accept="image/*"
                 onChange={handleImageChange}
@@ -137,7 +155,7 @@ const AdminProfile = () => {
               />
             </label>
           )}
-        </div> */}
+        </div>
 
         {/* Profile Info */}
         <div className="space-y-2 flex-1">

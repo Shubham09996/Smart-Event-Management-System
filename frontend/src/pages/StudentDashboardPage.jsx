@@ -1,7 +1,7 @@
 // 📂 src/pages/StudentDashboardPage.jsx
 import { useState, useEffect, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Settings, LogOut, LayoutDashboard, Bell, CalendarDays, UserRound, Calendar, Users, BarChart2, Award } from "lucide-react";
+import { LayoutDashboard, Bell, CalendarDays, UserRound, Calendar, Users, BarChart2, Award } from "lucide-react"; // Removed Settings, LogOut
 import api from "../utils/api";
 import { useAuth } from "../context/AuthContext";
 import { useLocation } from "react-router-dom";
@@ -92,15 +92,11 @@ const StudentDashboardPage = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const pageFromUrl = params.get("page");
-    console.log("StudentDashboardPage - location.search changed:", location.search); // Debug log
-    console.log("StudentDashboardPage - pageFromUrl:", pageFromUrl); // Debug log
     if (pageFromUrl && pageFromUrl !== activePage) {
       setActivePage(pageFromUrl);
-      console.log("StudentDashboardPage - activePage updated to:", pageFromUrl); // Debug log
     } else if (!pageFromUrl && activePage !== "dashboard") {
       // If page param is removed, default to dashboard
       setActivePage("dashboard");
-      console.log("StudentDashboardPage - activePage defaulted to dashboard"); // Debug log
     }
   }, [location.search, activePage]);
 
@@ -137,17 +133,6 @@ const StudentDashboardPage = () => {
     animate: { opacity: 1, y: 0 },
     exit: { opacity: 0, y: -20 },
   };
-
-  console.log("StudentDashboardPage - Rendering with:", {
-    activePage,
-    authLoading,
-    loading,
-    isAuthenticated,
-    error,
-    availableEventsCount: availableEvents.length,
-    registeredEventsCount: registeredEvents.length,
-    userRole: user?.role, // Added user role for debugging
-  });
 
   if (authLoading || loading) {
     return <div className="flex min-h-screen bg-[#0b1220] text-white items-center justify-center text-xl">Loading student dashboard...</div>;
