@@ -41,7 +41,7 @@ export default function AboutPage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      className="pt-28 px-4 sm:px-6 md:px-16 bg-gradient-to-b from-dark via-dark/95 to-dark text-white min-h-screen flex flex-col"
+      className="pt-28 px-4 sm:px-6 md:px-10 lg:px-16 bg-gradient-to-b from-dark via-dark/95 to-dark text-white min-h-screen flex flex-col"
     >
       {/* Heading */}
       <motion.h1
@@ -49,7 +49,7 @@ export default function AboutPage() {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, ease: "easeOut" }}
         viewport={{ once: true }}
-        className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-center leading-tight mb-8"
+        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-center leading-tight mb-6 sm:mb-8"
       >
         <span className="block bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 text-transparent bg-clip-text">
           About SmartEvents
@@ -62,7 +62,7 @@ export default function AboutPage() {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 1 }}
         viewport={{ once: true }}
-        className="text-center text-gray-300 mb-20 max-w-4xl mx-auto text-base sm:text-lg md:text-xl"
+        className="text-center text-gray-300 mb-16 md:mb-20 max-w-2xl sm:max-w-3xl lg:max-w-4xl mx-auto text-sm sm:text-base md:text-lg"
       >
         Transforming the future of college event management through innovation,
         technology, and seamless user experiences.
@@ -74,7 +74,7 @@ export default function AboutPage() {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.5 }}
         viewport={{ once: true }}
-        className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-24"
+        className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10 lg:gap-12 mb-20 md:mb-24"
       >
         {[
           {
@@ -96,14 +96,14 @@ export default function AboutPage() {
           <motion.div
             key={idx}
             {...fadeUp}
-            className="bg-dark/80 p-8 rounded-2xl shadow-2xl border border-white/10 backdrop-blur-sm hover:scale-105 transition-transform duration-500"
+            className="bg-dark/80 p-6 sm:p-8 rounded-2xl shadow-2xl border border-white/10 backdrop-blur-sm hover:scale-105 transition-transform duration-500"
           >
             <h3
-              className={`text-3xl font-bold mb-6 bg-gradient-to-r ${item.gradient} text-transparent bg-clip-text`}
+              className={`text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 bg-gradient-to-r ${item.gradient} text-transparent bg-clip-text`}
             >
               {item.title}
             </h3>
-            <p className="text-gray-300 text-lg">{item.text}</p>
+            <p className="text-gray-300 text-sm sm:text-base md:text-lg">{item.text}</p>
           </motion.div>
         ))}
       </motion.div>
@@ -112,7 +112,7 @@ export default function AboutPage() {
       <motion.h2
         {...fadeUp}
         transition={{ duration: 1, ease: "easeOut", delay: 0.7 }}
-        className="text-5xl font-extrabold text-center mb-20 bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 text-transparent bg-clip-text"
+        className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-center mb-16 md:mb-20 bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 text-transparent bg-clip-text"
       >
         Our Journey
       </motion.h2>
@@ -123,19 +123,21 @@ export default function AboutPage() {
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.9 }}
         viewport={{ once: true }}
-        className="relative max-w-5xl mx-auto mb-28"
+        className="relative max-w-xl md:max-w-3xl lg:max-w-5xl mx-auto mb-24 md:mb-28 px-4"
       >
         {/* Line */}
-        <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-purple-400 via-purple-600/50 to-pink-400 rounded"></div>
+        <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-purple-400 via-purple-600/50 to-pink-400 rounded hidden md:block"></div>
+        {/* Line for mobile - different positioning if needed, or simply hidden */}
+        <div className="absolute left-4 h-full w-1 bg-gradient-to-b from-purple-400 via-purple-600/50 to-pink-400 rounded md:hidden"></div>
 
-        <div className="space-y-24">
+        <div className="space-y-16 sm:space-y-20 md:space-y-24">
           {timelineData.map((item, index) => (
             <motion.div
               key={index}
               {...fadeUp}
               transition={{ ...fadeUp.transition, delay: 0.9 + index * 0.2 }}
-              className={`relative flex flex-col md:flex-row items-center md:items-start gap-10 ${
-                index % 2 === 0 ? "md:flex-row-reverse" : ""
+              className={`relative flex flex-col items-start gap-4 md:flex-row md:items-center md:gap-10 ${
+                index % 2 === 0 ? "md:flex-row-reverse text-left md:text-right" : "text-left"
               }`}
             >
               {/* Dot */}
@@ -144,23 +146,23 @@ export default function AboutPage() {
                 whileInView={{ scale: 1 }}
                 transition={{ type: "spring", stiffness: 200, damping: 15, delay: 1.0 + index * 0.2 }}
                 viewport={{ once: false }}
-                className={`absolute left-1/2 transform -translate-x-1/2 w-8 h-8 rounded-full shadow-2xl z-10 bg-gradient-to-r ${item.gradient}`}
+                className={`absolute left-0 md:left-1/2 transform md:-translate-x-1/2 w-6 h-6 sm:w-8 sm:h-8 rounded-full shadow-2xl z-10 bg-gradient-to-r ${item.gradient}`}
               ></motion.div>
 
               {/* Card */}
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 transition={{ type: "spring", stiffness: 200, damping: 15, delay: 1.1 + index * 0.2 }}
-                className={`bg-dark/90 p-8 rounded-2xl shadow-2xl border border-white/10 backdrop-blur-lg w-full md:w-5/12 ${
-                  index % 2 === 0 ? "md:mr-auto" : "md:ml-auto"
+                className={`bg-dark/90 p-5 sm:p-6 rounded-2xl shadow-2xl border border-white/10 backdrop-blur-lg w-full md:w-5/12 ${
+                  index % 2 === 0 ? "md:mr-auto pl-12 md:pl-8" : "md:ml-auto pl-12 md:pl-8"
                 }`}
               >
                 <h4
-                  className={`text-2xl font-bold mb-4 bg-gradient-to-r ${item.gradient} text-transparent bg-clip-text`}
+                  className={`text-xl sm:text-2xl font-bold mb-3 sm:mb-4 bg-gradient-to-r ${item.gradient} text-transparent bg-clip-text`}
                 >
                   {item.year} – {item.title}
                 </h4>
-                <p className="text-gray-300 text-lg">{item.description}</p>
+                <p className="text-gray-300 text-sm sm:text-base md:text-lg">{item.description}</p>
               </motion.div>
             </motion.div>
           ))}

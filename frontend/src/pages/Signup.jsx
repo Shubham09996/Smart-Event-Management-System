@@ -102,17 +102,17 @@ export default function Signup() {
   };
 
   return (
-    <div className="flex items-center justify-center bg-[#0a0a0f] text-white px-4 pt-20 sm:pt-32 pb-10 min-h-screen">
+    <div className="flex items-center justify-center bg-[#0a0a0f] text-white px-4 py-10 sm:py-16 md:pt-20 md:pb-16 min-h-screen">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="w-full max-w-lg bg-[#1a1a24] rounded-2xl p-8 shadow-lg"
+        className="w-full max-w-sm sm:max-w-lg bg-[#1a1a24] rounded-2xl p-6 sm:p-8 shadow-lg"
       >
         {/* Header */}
-        <div className="flex flex-col items-center mb-6">
-          <div className="bg-gradient-to-r from-purple-500 to-indigo-500 p-4 rounded-full mb-4">
-            <UserPlus size={32} />
+        <div className="flex flex-col items-center mb-5 sm:mb-6">
+          <div className="bg-gradient-to-r from-purple-500 to-indigo-500 p-3 sm:p-4 rounded-full mb-3 sm:mb-4">
+            <UserPlus size={24} sm:size={32} />
           </div>
           <motion.h2
             initial={{ opacity: 0, y: -10 }}
@@ -126,7 +126,7 @@ export default function Signup() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.5 }}
-            className="text-sm sm:text-base text-gray-400 mt-1"
+            className="text-xs sm:text-sm text-gray-400 mt-1"
           >
             Create your account to get started
           </motion.p>
@@ -137,16 +137,16 @@ export default function Signup() {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.6 }}
-          className="flex justify-center mb-6"
+          className="flex justify-center mb-5 sm:mb-6"
         >
-          <label htmlFor="profile-picture-upload" className="relative w-24 h-24 rounded-full overflow-hidden cursor-pointer border-2 border-indigo-500 hover:border-purple-400 transition-colors duration-200">
+          <label htmlFor="profile-picture-upload" className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden cursor-pointer border-2 border-indigo-500 hover:border-purple-400 transition-colors duration-200">
             <img
               src={profilePicture}
               alt="Profile"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200">
-              <Camera size={24} className="text-white" />
+              <Camera size={20} sm:size={24} className="text-white" />
             </div>
           </label>
           <input
@@ -159,29 +159,29 @@ export default function Signup() {
         </motion.div>
 
         {/* Form */}
-        <form className="space-y-4" onSubmit={handleSignup}>
+        <form className="space-y-3 sm:space-y-4" onSubmit={handleSignup}>
           {/* First + Last Name */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.7 }}
-            className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+            className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4"
           >
             <input
               type="text"
               placeholder="First Name"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              className="w-full px-4 py-2 sm:py-3 rounded-xl bg-[#0f0f16] border border-white/20 
-              focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition"
+              className="w-full px-3 py-2 sm:py-2.5 rounded-xl bg-[#0f0f16] border border-white/20 
+              focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition text-sm"
             />
             <input
               type="text"
               placeholder="Last Name"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
-              className="w-full px-4 py-2 sm:py-3 rounded-xl bg-[#0f0f16] border border-white/20 
-              focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition"
+              className="w-full px-3 py-2 sm:py-2.5 rounded-xl bg-[#0f0f16] border border-white/20 
+              focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition text-sm"
             />
           </motion.div>
 
@@ -192,14 +192,14 @@ export default function Signup() {
             transition={{ duration: 0.4, delay: 0.8 }}
             className="relative"
           >
-            <Mail className="absolute top-1/2 -translate-y-1/2 left-3 text-gray-400" />
+            <Mail className="absolute top-1/2 -translate-y-1/2 left-3 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
             <input
               type="email"
               placeholder="your.email@college.edu"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full pl-10 pr-3 py-2 sm:py-3 rounded-xl bg-[#0f0f16] border border-white/20 
-              focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition"
+              className="w-full pl-10 pr-3 py-2 sm:py-2.5 rounded-xl bg-[#0f0f16] border border-white/20 
+              focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition text-sm"
             />
           </motion.div>
 
@@ -210,21 +210,21 @@ export default function Signup() {
             transition={{ duration: 0.4, delay: 0.9 }}
             className="relative"
           >
-            <Lock className="absolute top-1/2 -translate-y-1/2 left-3 text-gray-400" />
+            <Lock className="absolute top-1/2 -translate-y-1/2 left-3 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Create a strong password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full pl-10 pr-10 py-2 sm:py-3 rounded-xl bg-[#0f0f16] border border-white/20 
-              focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition"
+              className="w-full pl-10 pr-10 py-2 sm:py-2.5 rounded-xl bg-[#0f0f16] border border-white/20 
+              focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition text-sm"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 p-1"
             >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
           </motion.div>
 
@@ -235,21 +235,21 @@ export default function Signup() {
             transition={{ duration: 0.4, delay: 1.0 }}
             className="relative"
           >
-            <Lock className="absolute top-1/2 -translate-y-1/2 left-3 text-gray-400" />
+            <Lock className="absolute top-1/2 -translate-y-1/2 left-3 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
             <input
               type={showConfirmPassword ? "text" : "password"}
               placeholder="Confirm your password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full pl-10 pr-10 py-2 sm:py-3 rounded-xl bg-[#0f0f16] border border-white/20 
-              focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition"
+              className="w-full pl-10 pr-10 py-2 sm:py-2.5 rounded-xl bg-[#0f0f16] border border-white/20 
+              focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition text-sm"
             />
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 p-1"
             >
-              {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
             </button>
           </motion.div>
 
@@ -260,8 +260,8 @@ export default function Signup() {
             transition={{ duration: 0.4, delay: 1.1 }}
             value={role}
             onChange={(e) => {setRole(e.target.value); setError(null); /* Clear error on role change */}}
-            className="w-full py-2 sm:py-3 px-4 rounded-xl bg-[#0f0f16] border border-white/20 
-            focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition"
+            className="w-full py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl bg-[#0f0f16] border border-white/20 
+            focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition text-sm"
           >
             <option value="student">Student</option>
             <option value="organizer">Organizer</option>
@@ -275,7 +275,7 @@ export default function Signup() {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3 }}
-              className="space-y-4"
+              className="space-y-3 sm:space-y-4"
             >
               {/* Gender */}
               <motion.div
@@ -284,12 +284,12 @@ export default function Signup() {
                 transition={{ duration: 0.4, delay: 1.2 }}
                 className="relative"
               >
-                <User className="absolute top-1/2 -translate-y-1/2 left-3 text-gray-400" />
+                <User className="absolute top-1/2 -translate-y-1/2 left-3 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
                 <select
                   value={gender}
                   onChange={(e) => setGender(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2 sm:py-3 rounded-xl bg-[#0f0f16] border border-white/20 
-                  focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition"
+                  className="w-full pl-10 pr-3 py-2 sm:py-2.5 rounded-xl bg-[#0f0f16] border border-white/20 
+                  focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition text-sm"
                 >
                   <option value="">Select Gender</option>
                   <option value="Male">Male</option>
@@ -306,14 +306,14 @@ export default function Signup() {
                 transition={{ duration: 0.4, delay: 1.3 }}
                 className="relative"
               >
-                <Hash className="absolute top-1/2 -translate-y-1/2 left-3 text-gray-400" />
+                <Hash className="absolute top-1/2 -translate-y-1/2 left-3 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
                 <input
                   type="text"
                   placeholder="Roll Number (e.g., 20XXXXX)"
                   value={rollNo}
                   onChange={(e) => setRollNo(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2 sm:py-3 rounded-xl bg-[#0f0f16] border border-white/20 
-                  focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition"
+                  className="w-full pl-10 pr-3 py-2 sm:py-2.5 rounded-xl bg-[#0f0f16] border border-white/20 
+                  focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition text-sm"
                 />
               </motion.div>
 
@@ -324,14 +324,14 @@ export default function Signup() {
                 transition={{ duration: 0.4, delay: 1.4 }}
                 className="relative"
               >
-                <Briefcase className="absolute top-1/2 -translate-y-1/2 left-3 text-gray-400" />
+                <Briefcase className="absolute top-1/2 -translate-y-1/2 left-3 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
                 <input
                   type="text"
                   placeholder="Department (e.g., Computer Science)"
                   value={department}
                   onChange={(e) => setDepartment(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2 sm:py-3 rounded-xl bg-[#0f0f16] border border-white/20 
-                  focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition"
+                  className="w-full pl-10 pr-3 py-2 sm:py-2.5 rounded-xl bg-[#0f0f16] border border-white/20 
+                  focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition text-sm"
                 />
               </motion.div>
             </motion.div>
@@ -344,7 +344,7 @@ export default function Signup() {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, delay: 1.5 }}
-              className="space-y-4"
+              className="space-y-3 sm:space-y-4"
             >
               {/* Society Name */}
               <motion.div
@@ -353,14 +353,14 @@ export default function Signup() {
                 transition={{ duration: 0.4, delay: 1.6 }}
                 className="relative"
               >
-                <Users className="absolute top-1/2 -translate-y-1/2 left-3 text-gray-400" />
+                <Users className="absolute top-1/2 -translate-y-1/2 left-3 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
                 <input
                   type="text"
                   placeholder="Society/Club Name (e.g., Tech Club)"
                   value={societyName}
                   onChange={(e) => setSocietyName(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2 sm:py-3 rounded-xl bg-[#0f0f16] border border-white/20 
-                  focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition"
+                  className="w-full pl-10 pr-3 py-2 sm:py-2.5 rounded-xl bg-[#0f0f16] border border-white/20 
+                  focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition text-sm"
                 />
               </motion.div>
             </motion.div>
@@ -372,21 +372,21 @@ export default function Signup() {
             whileTap={{ scale: 0.95 }}
             transition={{ type: "spring", stiffness: 400, damping: 10, delay: 1.7 }}
             type="submit"
-            className="w-full py-3 mt-2 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-xl 
-            font-bold text-white text-base sm:text-lg transition"
+            className="w-full py-2.5 sm:py-3 mt-2 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-xl 
+            font-bold text-white text-sm sm:text-base transition"
           >
             {loading ? "Creating Account..." : "Create Account"}
           </motion.button>
         </form>
 
-        {error && <p className="text-red-500 text-center mt-4 text-sm">{error}</p>}
+        {error && <p className="text-red-500 text-center mt-3 text-xs sm:text-sm">{error}</p>}
 
         {/* Already have account */}
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 1.8 }}
-          className="mt-6 text-center text-gray-400 text-sm sm:text-base"
+          className="mt-5 sm:mt-6 text-center text-gray-400 text-xs sm:text-sm"
         >
           Already have an account?{" "}
           <Link to="/login" className="text-purple-500 hover:underline">

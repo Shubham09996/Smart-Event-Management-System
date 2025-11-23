@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Html5QrcodeScanner } from 'html5-qrcode';
+import { Html5QrcodeScanner, Html5QrcodeSupportedFormats } from 'html5-qrcode';
 
 const QrScanner = ({ onResult, qrbox, fps }) => {
   const scannerRef = useRef(null);
@@ -12,8 +12,9 @@ const QrScanner = ({ onResult, qrbox, fps }) => {
         {
           qrbox: qrbox || { width: 250, height: 250 },
           fps: fps || 10,
+          formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE]
         },
-        false // Verbose logging
+        true // Verbose logging: Changed from false to true
       );
 
       scannerRef.current.render(onScanSuccess, onScanError);
@@ -27,7 +28,7 @@ const QrScanner = ({ onResult, qrbox, fps }) => {
     }
 
     function onScanError(error) {
-      // console.warn(`QR Scan Error: ${error}`);
+      console.error(`QR Scan Error:`, error); // Added console.error
       setErrorMessage(`QR Scan Error: ${error}`);
     }
 

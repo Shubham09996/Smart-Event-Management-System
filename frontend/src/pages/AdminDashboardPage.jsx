@@ -14,6 +14,7 @@ import AdminTips from "../components/adminDashboard/AdminTips"; // New import
 import api from "../utils/api"; // Import the API instance
 import { useAuth } from "../context/AuthContext";
 import { useLocation } from "react-router-dom";
+import { Menu } from "lucide-react"; // Import Menu icon
 
 const pageVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -28,6 +29,7 @@ const AdminDashboardPage = () => {
     const params = new URLSearchParams(location.search);
     return params.get("page") || "dashboard";
   });
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false); // New state for mobile sidebar
   const [users, setUsers] = useState([]);
   const [categories, setCategories] = useState([]);
   const [pendingEvents, setPendingEvents] = useState([]);
@@ -35,6 +37,9 @@ const AdminDashboardPage = () => {
   const [eventCategoryCounts, setEventCategoryCounts] = useState([]);
   const [eventMonthCounts, setEventMonthCounts] = useState([]);
   const [systemSettings, setSystemSettings] = useState([]);
+
+  // New state to track if it's a desktop view
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 768);
 
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [errorUsers, setErrorUsers] = useState(null);
@@ -191,6 +196,15 @@ const AdminDashboardPage = () => {
     setActivePage(pageFromUrl || "dashboard");
     console.log("AdminDashboardPage - New activePage set to:", pageFromUrl || "dashboard"); // Debug log
   }, [location.search]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleUserUpdated = () => {
     fetchUsers();
@@ -358,11 +372,11 @@ const AdminDashboardPage = () => {
       className="flex min-h-screen bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a]"
     >
       {/* Sidebar */}
-      <Sidebar active={activePage} setActivePage={setActivePage} />
+      <Sidebar active={activePage} setActivePage={setActivePage} mobileSidebarOpen={mobileSidebarOpen} setMobileSidebarOpen={setMobileSidebarOpen} isDesktop={isDesktop} />
 
       {/* Main Section */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Topbar />
+        <Topbar setMobileSidebarOpen={setMobileSidebarOpen} />
         <div className="p-6 space-y-6 overflow-y-auto">
           {/* Welcome Message */}
           <motion.h1

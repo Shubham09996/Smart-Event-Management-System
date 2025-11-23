@@ -43,7 +43,7 @@ const RegisteredEvents = ({ events }) => {
 
   return (
     <motion.div
-      className="bg-[#111827] rounded-2xl p-5 mt-6 shadow-lg"
+      className="bg-[#111827] rounded-2xl p-4 mt-6 shadow-lg"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7 }}
@@ -52,11 +52,11 @@ const RegisteredEvents = ({ events }) => {
       {events.length === 0 ? (
         <p className="text-gray-400">No registered events yet.</p>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {events.map((ev, i) => (
             <motion.div
               key={ev.eventId._id} // Use ev.eventId._id
-              className="bg-[#111827] rounded-2xl p-5 shadow-lg flex flex-col justify-between overflow-hidden"
+              className="bg-[#111827] rounded-2xl p-4 shadow-lg flex flex-col justify-between overflow-hidden"
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.15, duration: 0.6 }}
@@ -66,36 +66,36 @@ const RegisteredEvents = ({ events }) => {
                 <img
                   src={ev.eventId.eventImage}
                   alt={ev.eventId.title}
-                  className="w-full h-40 object-cover rounded-xl mb-4"
+                  className="w-full h-36 object-cover rounded-xl mb-3"
                 />
               )}
-              <div className="flex justify-between items-start mb-3">
-                <p className={`px-3 py-1 rounded-full text-xs font-medium text-white ${ev.eventId.category === 'Workshop' ? 'bg-green-600/20' : ev.eventId.category === 'Seminar' ? 'bg-yellow-600/20' : 'bg-blue-600/20'}`}>
+              <div className="flex justify-between items-start mb-2">
+                <p className={`px-2.5 py-0.5 rounded-full text-xs font-medium text-white ${ev.eventId.category === 'Workshop' ? 'bg-green-600/20' : ev.eventId.category === 'Seminar' ? 'bg-yellow-600/20' : 'bg-blue-600/20'}`}>
                   {ev.eventId.category}
                 </p>
               </div>
-              <h4 className="text-white font-bold text-xl mb-2">{ev.eventId.title}</h4>
-              <p className="text-slate-400 text-sm mb-4 line-clamp-3">{ev.eventId.description}</p>
-              <div className="flex flex-col gap-2 text-slate-300 text-sm mb-4">
+              <h4 className="text-white font-bold text-lg mb-1">{ev.eventId.title}</h4>
+              <p className="text-slate-400 text-sm mb-3 line-clamp-3">{ev.eventId.description}</p>
+              <div className="flex flex-col gap-1.5 text-slate-300 text-sm mb-3">
                 <div className="flex gap-2 items-center">
-                  <Calendar size={16} className="text-indigo-400" /> {new Date(ev.eventId.date).toLocaleDateString()} at {ev.eventId.startTime} - {ev.eventId.endTime}
+                  <Calendar size={14} className="text-indigo-400" /> {new Date(ev.eventId.date).toLocaleDateString()} at {ev.eventId.startTime} - {ev.eventId.endTime}
                 </div>
                 <div className="flex gap-2 items-center">
-                  <MapPin size={16} className="text-indigo-400" /> {ev.eventId.location}
+                  <MapPin size={14} className="text-indigo-400" /> {ev.eventId.location}
                 </div>
               </div>
-              <div className="flex gap-3 mt-auto">
+              <div className="flex gap-2 mt-auto">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   onClick={() => generateAndShowQr(ev.eventId._id, ev.eventId.title)}
                   disabled={qrLoading}
-                  className="flex items-center gap-2 bg-indigo-600 text-white px-3 py-1 rounded-lg text-xs disabled:opacity-50"
+                  className="flex items-center justify-center gap-1.5 bg-indigo-600 text-white px-3 py-1.5 rounded-lg text-xs disabled:opacity-50 flex-1"
                 >
                   {qrLoading ? "Loading QR..." : <QrCode size={14} />} {qrLoading ? "Loading QR..." : "Show QR"}
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
-                  className="flex items-center gap-2 bg-slate-700 text-white px-3 py-1 rounded-lg text-xs"
+                  className="flex items-center justify-center gap-1.5 bg-slate-700 text-white px-3 py-1.5 rounded-lg text-xs flex-1"
                 >
                   <Download size={14} /> Download Pass
                 </motion.button>
@@ -118,7 +118,7 @@ const RegisteredEvents = ({ events }) => {
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
-              className="bg-[#1e293b] p-6 rounded-xl w-80 text-center relative"
+              className="bg-[#1e293b] p-6 rounded-xl w-72 sm:w-80 text-center relative"
             >
               <button
                 onClick={() => setShowQrModal(false)}
@@ -126,7 +126,7 @@ const RegisteredEvents = ({ events }) => {
               >
                 <X size={20} />
               </button>
-              <h3 className="text-white font-semibold mb-4">Your QR Pass for {selectedEventTitle}</h3>
+              <h3 className="text-white font-semibold mb-4 text-lg">Your QR Pass for {selectedEventTitle}</h3>
               {currentQrCode ? (
                 <div className="flex justify-center">
                   <QRCodeCanvas value={currentQrCode} size={256} bgColor="#111827" fgColor="#ffffff" level="L" includeMargin={true} />

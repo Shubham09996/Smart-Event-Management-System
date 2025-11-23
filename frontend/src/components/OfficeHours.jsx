@@ -12,10 +12,10 @@ export default function OfficeHours() {
       initial="hidden"
       whileInView="visible"
       transition={{ duration: 0.8 }}
-      className="bg-dark/80 p-8 rounded-2xl shadow-lg border border-white/10 backdrop-blur-sm"
+      className="bg-dark/80 p-6 sm:p-8 rounded-2xl shadow-lg border border-white/10 backdrop-blur-sm"
     >
-      <h3 className="text-2xl font-bold mb-6">Office Hours</h3>
-      <ul className="space-y-2 text-gray-300">
+      <h3 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Office Hours</h3>
+      <ul className="space-y-1.5 sm:space-y-2 text-gray-300 text-sm sm:text-base">
         <li className="flex justify-between">
           <span>Monday - Friday</span>
           <span>9:00 AM - 6:00 PM</span>

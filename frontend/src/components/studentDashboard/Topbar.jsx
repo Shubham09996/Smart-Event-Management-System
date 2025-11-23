@@ -1,10 +1,10 @@
-import { Bell, Search, UserRound, LogOut } from "lucide-react";
+import { Bell, Search, UserRound, LogOut, Menu } from "lucide-react";
 import { motion } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
-const Topbar = () => {
+const Topbar = ({ setMobileSidebarOpen }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
@@ -41,6 +41,14 @@ const Topbar = () => {
       transition={{ duration: 0.6 }}
     >
       <div className="px-4 md:px-6 py-3 flex items-center justify-between">
+        {/* Hamburger menu for mobile */}
+        <button
+          onClick={() => setMobileSidebarOpen(true)}
+          className="text-slate-300 hover:text-white md:hidden p-2"
+        >
+          <Menu size={24} />
+        </button>
+
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -52,11 +60,11 @@ const Topbar = () => {
         </motion.div>
 
         <div className="flex items-center gap-4">
-          <div className="relative">
+          <div className="relative w-40 sm:w-auto">
             <input
               type="text"
               placeholder="Search events..."
-              className="bg-white/5 text-sm text-slate-200 px-4 py-2 rounded-xl focus:outline-none"
+              className="bg-white/5 text-sm text-slate-200 px-4 py-2 rounded-xl focus:outline-none w-full"
             />
             <Search className="absolute right-3 top-2.5 text-slate-400" size={16} />
           </div>
@@ -76,7 +84,7 @@ const Topbar = () => {
                 alt="Profile"
                 className="h-8 w-8 rounded-full object-cover border-2 border-indigo-500"
               />
-              <div>
+              <div className="hidden md:block">
                 <p className="text-sm text-white font-medium">{user?.name || "Student"}</p>
                 <p className="text-xs text-slate-400">{user?.email || "student@example.com"}</p>
               </div>

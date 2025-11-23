@@ -106,14 +106,14 @@ export default function EventsPage() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
-      className="pt-28 px-4 sm:px-6 md:px-10 bg-gradient-to-b from-dark via-dark/95 to-dark text-white min-h-screen"
+      className="pt-28 bg-gradient-to-b from-dark via-dark/95 to-dark text-white min-h-screen"
     >
       {/* Page Heading */}
       <motion.h1
         initial={{ opacity: 0, y: -40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-center mb-6 bg-gradient-to-r from-indigo-400 to-pink-500 text-transparent bg-clip-text"
+        className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-center mb-4 sm:mb-6 bg-gradient-to-r from-indigo-400 to-pink-500 text-transparent bg-clip-text"
       >
         Upcoming Events
       </motion.h1>
@@ -122,7 +122,7 @@ export default function EventsPage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3, duration: 0.8 }}
-        className="text-center text-gray-300 mb-14 max-w-2xl mx-auto px-4 sm:px-0"
+        className="text-center text-gray-300 mb-10 sm:mb-14 max-w-xl mx-auto px-4 sm:px-0 text-sm sm:text-base"
       >
         Discover amazing events happening at your campus. From tech talks to
         cultural festivals, find opportunities to learn, connect, and grow.
@@ -133,20 +133,20 @@ export default function EventsPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.5 }}
-        className="mb-10 flex flex-col sm:flex-row flex-wrap justify-center items-center gap-4 sm:gap-3"
+        className="mb-10 flex flex-col sm:flex-row flex-wrap justify-center items-center gap-3 sm:gap-3 px-4 sm:px-6 md:px-10"
       >
         <input
           type="text"
           placeholder="Search events..."
           value={searchKeyword}
           onChange={(e) => setSearchKeyword(e.target.value)}
-          className="w-full sm:w-auto flex-1 p-3 rounded-lg bg-[#1e293b] text-white border border-gray-700 focus:border-purple-500 outline-none"
+          className="w-full sm:w-auto flex-1 p-2.5 sm:p-3 rounded-lg bg-[#1e293b] text-white border border-gray-700 focus:border-purple-500 outline-none text-sm"
         />
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
           disabled={categoriesLoading}
-          className="w-full sm:w-auto flex-1 p-3 rounded-lg bg-[#1e293b] text-white border border-gray-700 focus:border-purple-500 outline-none"
+          className="w-full sm:w-auto flex-1 p-2.5 sm:p-3 rounded-lg bg-[#1e293b] text-white border border-gray-700 focus:border-purple-500 outline-none text-sm"
         >
           <option value="">{categoriesLoading ? "Loading Categories..." : "All Categories"}</option>
           {categoriesError && <option value="">Error loading categories</option>}
@@ -159,7 +159,7 @@ export default function EventsPage() {
         <select
           value={selectedDateRange}
           onChange={(e) => setSelectedDateRange(e.target.value)}
-          className="w-full sm:w-auto flex-1 p-3 rounded-lg bg-[#1e293b] text-white border border-gray-700 focus:border-purple-500 outline-none"
+          className="w-full sm:w-auto flex-1 p-2.5 sm:p-3 rounded-lg bg-[#1e293b] text-white border border-gray-700 focus:border-purple-500 outline-none text-sm"
         >
           <option value="">All Dates</option>
           <option value="upcoming">Upcoming</option>
@@ -168,7 +168,7 @@ export default function EventsPage() {
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
-          className="w-full sm:w-auto flex-1 p-3 rounded-lg bg-[#1e293b] text-white border border-gray-700 focus:border-purple-500 outline-none"
+          className="w-full sm:w-auto flex-1 p-2.5 sm:p-3 rounded-lg bg-[#1e293b] text-white border border-gray-700 focus:border-purple-500 outline-none text-sm"
         >
           <option value="date">Sort by Date</option>
           <option value="title">Sort by Title</option>
@@ -176,7 +176,7 @@ export default function EventsPage() {
         <select
           value={sortOrder}
           onChange={(e) => setSortOrder(e.target.value)}
-          className="w-full sm:w-auto flex-1 p-3 rounded-lg bg-[#1e293b] text-white border border-gray-700 focus:border-purple-500 outline-none"
+          className="w-full sm:w-auto flex-1 p-2.5 sm:p-3 rounded-lg bg-[#1e293b] text-white border border-gray-700 focus:border-purple-500 outline-none text-sm"
         >
           <option value="asc">Ascending</option>
           <option value="desc">Descending</option>
@@ -188,6 +188,7 @@ export default function EventsPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.7 }}
+        className="mb-10 sm:mb-14"
       >
         <FeaturedEvents events={featuredEvents} onRegister={handleRegisterClick} />
       </motion.div>
@@ -197,6 +198,7 @@ export default function EventsPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.9 }}
+        className="mb-10 sm:mb-14"
       >
         <AllEvents events={events} onRegister={handleRegisterClick} />
       </motion.div>

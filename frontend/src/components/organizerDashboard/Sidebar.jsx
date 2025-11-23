@@ -1,15 +1,18 @@
-import { Home, Layers, LogOut, ShieldCheck } from "lucide-react";
+import { Home, Layers, LogOut, ShieldCheck } from "lucide-react"; // Removed X icon
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 
-const Sidebar = ({ active }) => {
-  const navigate = useNavigate(); // Initialize useNavigate
+const Sidebar = ({ active, setActivePage, setMobileSidebarOpen }) => {
+  const navigate = useNavigate();
   const NavItem = ({ icon: Icon, label, isActive, onClick }) => (
     <motion.div
       whileHover={{ scale: 1.05, x: 5 }}
       whileTap={{ scale: 0.95 }}
       transition={{ type: "spring", stiffness: 400, damping: 10 }}
-      onClick={onClick}
+      onClick={() => {
+        onClick();
+        setMobileSidebarOpen(false); // Close sidebar on navigation
+      }}
       className={`flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-colors duration-200 ${
         isActive
           ? "bg-indigo-600/20 text-indigo-300"
@@ -25,15 +28,11 @@ const Sidebar = ({ active }) => {
   const handleLogout = () => {
     localStorage.removeItem("token"); // agar token/session hai to clear
     navigate('/login'); // ya tum jis page pe le jana chaho
+    setMobileSidebarOpen(false); // Close sidebar on logout
   };
 
   return (
-    <motion.aside
-      initial={{ opacity: 0, x: -50 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.6 }}
-      className="hidden md:flex flex-col w-72 bg-[#0b1220] border-r border-white/5 p-4 gap-3"
-    >
+    <div className="flex flex-col h-full">
       {/* Logo */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -69,7 +68,7 @@ const Sidebar = ({ active }) => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.6 }}
-        className="mt-2 flex flex-col gap-2"
+        className="mt-4 flex flex-col gap-2"
       >
         <NavItem
           icon={Home}
@@ -105,7 +104,10 @@ const Sidebar = ({ active }) => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             transition={{ type: "spring", stiffness: 400, damping: 10, delay: 1.0 }}
-            onClick={() => navigate("/organizer?page=verify-pass")} // ✅ yaha verify-pass page pe le jaa
+            onClick={() => {
+              navigate("/organizer?page=verify-pass");
+              setMobileSidebarOpen(false); // Close sidebar on navigation
+            }}
             className="mt-3 w-full flex items-center justify-center gap-2 text-sm bg-white/10 hover:bg-white/15 text-white py-2 rounded-xl transition"
           >
             <ShieldCheck size={16} /> Verify Pass
@@ -121,7 +123,7 @@ const Sidebar = ({ active }) => {
           <LogOut size={18} /> Logout
         </motion.button>
       </motion.div>
-    </motion.aside>
+    </div>
   );
 };
 

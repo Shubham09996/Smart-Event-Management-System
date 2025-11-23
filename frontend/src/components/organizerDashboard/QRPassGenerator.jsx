@@ -74,7 +74,7 @@ const QRPassGenerator = ({ events }) => {
           },
         };
   
-        const { data } = await api.post("/events/verifyqr", { qrToken: decodedText }, config);
+        const { data } = await api.post("/events/verifyqr", { qrCode: decodedText }, config);
         setScanResult(data);
       } catch (err) {
         setScanError(err.response && err.response.data.message ? err.response.data.message : err.message);
@@ -231,8 +231,13 @@ const QRPassGenerator = ({ events }) => {
                   className="mt-4 text-green-500"
                 >
                   <p>Verified: {scanResult.message}</p>
-                  <p>Event: {scanResult.event.title} ({scanResult.event.location})</p>
-                  <p>User: {scanResult.user.name} ({scanResult.user.email})</p>
+                  <p className="mt-2 text-lg font-semibold text-white">User Details:</p>
+                  <p>Name: {scanResult.user.name}</p>
+                  <p>Email: {scanResult.user.email}</p>
+                  <p>Role: {scanResult.user.role}</p>
+                  <p className="mt-2 text-lg font-semibold text-white">Event Details:</p>
+                  <p>Title: {scanResult.event.title}</p>
+                  <p>Location: {scanResult.event.location}</p>
                 </motion.div>
               )}
             </motion.div>

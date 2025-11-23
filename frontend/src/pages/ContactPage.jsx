@@ -15,7 +15,7 @@ export default function ContactPage() {
       initial="hidden"
       animate="visible"
       transition={{ duration: 0.8 }}
-      className="pt-28 px-4 sm:px-6 md:px-16 bg-gradient-to-b from-dark via-dark/95 to-dark text-white min-h-screen flex flex-col"
+      className="pt-28 px-4 sm:px-6 md:px-10 lg:px-16 bg-gradient-to-b from-dark via-dark/95 to-dark text-white min-h-screen flex flex-col"
     >
       {/* Heading */}
       <motion.h1
@@ -23,7 +23,7 @@ export default function ContactPage() {
         animate="visible"
         variants={fadeUp}
         transition={{ duration: 0.7 }}
-        className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-center leading-tight mb-6"
+        className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-center leading-tight mb-4 sm:mb-6"
       >
         <span className="block bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 text-transparent bg-clip-text">
           Get in Touch
@@ -36,7 +36,7 @@ export default function ContactPage() {
         animate="visible"
         variants={fadeUp}
         transition={{ delay: 0.3, duration: 0.8 }}
-        className="text-center text-gray-300 mb-16 max-w-3xl mx-auto text-base sm:text-lg"
+        className="text-center text-gray-300 mb-12 sm:mb-16 max-w-xl mx-auto text-sm sm:text-base md:text-lg"
       >
         Have questions? We'd love to hear from you. Send us a message and we'll
         respond as soon as possible.
@@ -48,7 +48,7 @@ export default function ContactPage() {
         animate="visible"
         variants={fadeUp}
         transition={{ delay: 0.5, duration: 0.8 }}
-        className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-20"
+        className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 mb-16 md:mb-20"
       >
         <motion.div
           initial="hidden"
@@ -58,7 +58,7 @@ export default function ContactPage() {
         >
           <ContactForm />
         </motion.div>
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-6 sm:gap-8">
           <motion.div
             initial="hidden"
             animate="visible"

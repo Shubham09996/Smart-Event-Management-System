@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bell, Search, User, LogOut, Settings, UserRound } from "lucide-react";
+import { Bell, Search, User, LogOut, Settings, UserRound, Menu } from "lucide-react";
 import { useRef, useEffect } from "react"; // Add useRef and useEffect
 import { useNavigate } from "react-router-dom"; // Add useNavigate
 import { useAuth } from "../../context/AuthContext"; // Add useAuth
 
-const Topbar = () => {
+const Topbar = ({ setMobileSidebarOpen }) => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const profileMenuRef = useRef(null); // Ref for profile dropdown
@@ -43,12 +43,20 @@ const Topbar = () => {
 
   return (
     <div className="flex justify-between items-center px-6 py-4 bg-[#111827]/90 backdrop-blur-lg border-b border-gray-700">
+      {/* Hamburger menu for mobile */}
+      <button
+        onClick={() => setMobileSidebarOpen(true)}
+        className="text-gray-400 hover:text-white md:hidden p-2"
+      >
+        <Menu size={24} />
+      </button>
+
       {/* Title */}
       <motion.h2
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.4 }}
-        className="text-xl font-semibold text-white"
+        className="text-xl font-semibold text-white md:ml-0 ml-4"
       >
         Admin Dashboard
       </motion.h2>

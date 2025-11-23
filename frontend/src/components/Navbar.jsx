@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { User2, LogOut, Menu, X } from "lucide-react"; // Added Menu and X icons
+import { User2, LogOut, Menu, X, LayoutDashboard, CalendarDays, Layers, Bell, Tags, BarChart3, Settings } from "lucide-react"; // Added Menu and X icons
 import { AnimatePresence } from "framer-motion"; // Added AnimatePresence for mobile menu
 
 export default function Navbar() {
@@ -56,12 +56,30 @@ export default function Navbar() {
     { path: "/contact", label: "Contact Us" }, // 👈 Contact page link
   ];
 
+  // New: Dashboard Nav Links for authenticated users in mobile menu
+  const dashboardNavLinks = [
+    { icon: LayoutDashboard, label: "Dashboard", page: "dashboard" },
+    { icon: CalendarDays, label: "Available Events", page: "available-events" },
+    { icon: Layers, label: "Registered Events", page: "registered-events" },
+    { icon: Bell, label: "Notifications", page: "notifications" },
+  ];
+
+  // New: Admin Dashboard Nav Links for authenticated admin users in mobile menu
+  const adminDashboardNavLinks = [
+    { icon: LayoutDashboard, label: "Dashboard", page: "dashboard" },
+    { icon: Layers, label: "Events", page: "events" },
+    { icon: User2, label: "Users", page: "users" },
+    { icon: Tags, label: "Categories", page: "categories" },
+    { icon: BarChart3, label: "Analytics", page: "analytics" },
+    { icon: Settings, label: "Settings", page: "settings" },
+  ];
+
   return (
     <motion.nav
       initial={{ y: -50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6 }}
-      className="flex justify-between items-center px-10 py-6 bg-gray-900 text-white fixed top-0 left-0 w-full z-50 border-b border-white/10"
+      className="flex justify-between items-center px-4 md:px-10 py-4 md:py-6 bg-gray-900 text-white fixed top-0 left-0 w-full z-50 border-b border-white/10"
     >
       {/* Logo */}
       <Link to="/">
@@ -69,7 +87,7 @@ export default function Navbar() {
           initial={{ opacity: 0, x: -30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-xl font-bold flex items-center gap-2"
+          className="text-lg md:text-xl font-bold flex items-center gap-2"
         >
           <span className="text-primary">📅 SmartEvents</span>
         </motion.div>
@@ -77,13 +95,13 @@ export default function Navbar() {
 
       {/* Hamburger Menu Icon for Mobile */}
       <div className="md:hidden flex items-center">
-        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-white focus:outline-none">
+        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-white focus:outline-none p-2">
           {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
       {/* Desktop Links */}
-      <ul className="hidden md:flex gap-8 text-gray-300">
+      <ul className="hidden md:flex gap-4 lg:gap-8 text-gray-300">
         {navLinks.map((link, i) => (
           <motion.li
             key={link.path || link.label}
@@ -140,7 +158,7 @@ export default function Navbar() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 10 }}
                 transition={{ duration: 0.2 }}
-                className="absolute right-0 mt-2 w-48 bg-[#1f2937] rounded-md shadow-lg py-1 z-10"
+                className="absolute right-0 mt-2 w-40 md:w-48 bg-[#1f2937] rounded-md shadow-lg py-1 z-10"
               >
                 <button
                   onClick={handleProfileView}
@@ -197,7 +215,7 @@ export default function Navbar() {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="fixed top-0 right-0 h-full w-64 bg-gray-800 z-40 p-5 pt-28 shadow-lg md:hidden"
+            className="fixed top-0 right-0 h-full w-56 sm:w-64 bg-gray-800 z-40 p-5 pt-20 shadow-lg md:hidden overflow-y-auto"
           >
             {/* Close button for mobile menu */}
             <motion.button
@@ -230,25 +248,50 @@ export default function Navbar() {
               ))}
 
               {isAuthenticated && user && (
-                <motion.li
-                  custom={navLinks.length}
-                  initial="hidden"
-                  animate="visible"
-                  variants={navItemVariants}
-                >
-                  <Link
-                    to={getDashboardPath(user?.role)}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block py-2 text-lg hover:text-white transition"
-                  >
-                    Dashboard
-                  </Link>
-                </motion.li>
+                <>
+                  {user?.role === "admin" ? (
+                    adminDashboardNavLinks.map((link, i) => (
+                      <motion.li
+                        key={link.page}
+                        custom={navLinks.length + i}
+                        initial="hidden"
+                        animate="visible"
+                        variants={navItemVariants}
+                      >
+                        <Link
+                          to={`${getDashboardPath(user?.role)}?page=${link.page}`}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="flex items-center gap-2 w-full text-left py-2 text-lg text-gray-300 hover:text-white"
+                        >
+                          <link.icon size={20} /> {link.label}
+                        </Link>
+                      </motion.li>
+                    ))
+                  ) : (
+                    dashboardNavLinks.map((link, i) => (
+                      <motion.li
+                        key={link.page}
+                        custom={navLinks.length + i}
+                        initial="hidden"
+                        animate="visible"
+                        variants={navItemVariants}
+                      >
+                        <Link
+                          to={`${getDashboardPath(user?.role)}?page=${link.page}`}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="flex items-center gap-2 w-full text-left py-2 text-lg text-gray-300 hover:text-white"
+                        >
+                          <link.icon size={20} /> {link.label}
+                        </Link>
+                      </motion.li>
+                    ))
+                  )}
+                </>
               )}
 
               {isAuthenticated ? (
                 <motion.li
-                  custom={navLinks.length + (isAuthenticated && user ? 1 : 0)}
+                  custom={navLinks.length + (user?.role === "admin" ? adminDashboardNavLinks.length : dashboardNavLinks.length) + 1}
                   initial="hidden"
                   animate="visible"
                   variants={navItemVariants}
@@ -284,7 +327,7 @@ export default function Navbar() {
                     </Link>
                   </motion.li>
                   <motion.li
-                    custom={navLinks.length + 1 + (isAuthenticated && user ? 1 : 0)}
+                    custom={navLinks.length + (user?.role === "admin" ? adminDashboardNavLinks.length : dashboardNavLinks.length) + 2}
                     initial="hidden"
                     animate="visible"
                     variants={navItemVariants}
