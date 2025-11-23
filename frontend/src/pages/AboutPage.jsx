@@ -1,30 +1,19 @@
 import { motion } from "framer-motion";
 import Footer from "../components/Footer";
 
-const timelineData = [
+// Only 2 Members as requested
+const teamData = [
   {
-    year: "2020",
-    title: "Vision Born",
-    description: "Conceived the idea of revolutionizing college event management.",
+    role: "Full Stack Lead",
+    name: "Shubham Gupta",
+    description: "Handles Full Stack development, managing both backend architecture and frontend integration.",
     gradient: "from-pink-400 to-purple-500",
   },
   {
-    year: "2021",
-    title: "Platform Development",
-    description: "Built the core infrastructure with cutting-edge technology.",
+    role: "UI/UX & Documentation",
+    name: "Sneha Gupta",
+    description: "Responsible for User Interface/Experience design and maintaining project documentation.",
     gradient: "from-blue-400 to-cyan-500",
-  },
-  {
-    year: "2022",
-    title: "Student Integration",
-    description: "Launched with 10,000+ students across 50+ colleges.",
-    gradient: "from-green-400 to-emerald-500",
-  },
-  {
-    year: "2023",
-    title: "Nationwide Expansion",
-    description: "Scaled to 100+ colleges, fostering a connected student community.",
-    gradient: "from-yellow-400 to-orange-500",
   },
 ];
 
@@ -108,16 +97,16 @@ export default function AboutPage() {
         ))}
       </motion.div>
 
-      {/* Journey Section */}
+      {/* Team Section (Replaces Journey) */}
       <motion.h2
         {...fadeUp}
         transition={{ duration: 1, ease: "easeOut", delay: 0.7 }}
         className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-center mb-16 md:mb-20 bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 text-transparent bg-clip-text"
       >
-        Our Journey
+        Meet Our Team
       </motion.h2>
 
-      {/* Timeline */}
+      {/* Team Timeline UI */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -127,15 +116,15 @@ export default function AboutPage() {
       >
         {/* Line */}
         <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-purple-400 via-purple-600/50 to-pink-400 rounded hidden md:block"></div>
-        {/* Line for mobile - different positioning if needed, or simply hidden */}
+        {/* Line for mobile */}
         <div className="absolute left-4 h-full w-1 bg-gradient-to-b from-purple-400 via-purple-600/50 to-pink-400 rounded md:hidden"></div>
 
         <div className="space-y-16 sm:space-y-20 md:space-y-24">
-          {timelineData.map((item, index) => (
+          {teamData.map((member, index) => (
             <motion.div
               key={index}
               {...fadeUp}
-              transition={{ ...fadeUp.transition, delay: 0.9 + index * 0.2 }}
+              transition={{ ...fadeUp.transition, delay: 0.2 }}
               className={`relative flex flex-col items-start gap-4 md:flex-row md:items-center md:gap-10 ${
                 index % 2 === 0 ? "md:flex-row-reverse text-left md:text-right" : "text-left"
               }`}
@@ -144,25 +133,33 @@ export default function AboutPage() {
               <motion.div
                 initial={{ scale: 0 }}
                 whileInView={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 200, damping: 15, delay: 1.0 + index * 0.2 }}
+                transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.4 }}
                 viewport={{ once: false }}
-                className={`absolute left-0 md:left-1/2 transform md:-translate-x-1/2 w-6 h-6 sm:w-8 sm:h-8 rounded-full shadow-2xl z-10 bg-gradient-to-r ${item.gradient}`}
+                className={`absolute left-0 md:left-1/2 transform md:-translate-x-1/2 w-6 h-6 sm:w-8 sm:h-8 rounded-full shadow-2xl z-10 bg-gradient-to-r ${member.gradient} border-4 border-dark`}
               ></motion.div>
 
               {/* Card */}
               <motion.div
                 whileHover={{ scale: 1.05 }}
-                transition={{ type: "spring", stiffness: 200, damping: 15, delay: 1.1 + index * 0.2 }}
+                transition={{ type: "spring", stiffness: 200, damping: 15 }}
                 className={`bg-dark/90 p-5 sm:p-6 rounded-2xl shadow-2xl border border-white/10 backdrop-blur-lg w-full md:w-5/12 ${
                   index % 2 === 0 ? "md:mr-auto pl-12 md:pl-8" : "md:ml-auto pl-12 md:pl-8"
                 }`}
               >
+                {/* Name */}
                 <h4
-                  className={`text-xl sm:text-2xl font-bold mb-3 sm:mb-4 bg-gradient-to-r ${item.gradient} text-transparent bg-clip-text`}
+                  className={`text-xl sm:text-2xl font-bold mb-2 bg-gradient-to-r ${member.gradient} text-transparent bg-clip-text`}
                 >
-                  {item.year} – {item.title}
+                  {member.name}
                 </h4>
-                <p className="text-gray-300 text-sm sm:text-base md:text-lg">{item.description}</p>
+                {/* Role */}
+                <p className="text-white/90 font-semibold text-sm sm:text-base mb-3 uppercase tracking-wider">
+                  {member.role}
+                </p>
+                {/* Description */}
+                <p className="text-gray-300 text-sm sm:text-base md:text-lg">
+                  {member.description}
+                </p>
               </motion.div>
             </motion.div>
           ))}

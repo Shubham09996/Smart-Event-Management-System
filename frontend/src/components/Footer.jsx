@@ -19,9 +19,9 @@ export default function Footer() {
           className="max-w-sm text-center md:text-left"
         >
           <h3 className="text-xl font-bold text-indigo-400">📅 SmartEvents</h3>
-          <p className="mt-3 text-sm">
-            Revolutionizing campus event management with AI-powered registration,
-            real-time analytics, and seamless integration for students and organizers.
+          <p className="text-gray-400 text-sm leading-relaxed max-w-md">
+            Revolutionizing campus event management with registration,
+            seamless check-ins, and insightful analytics.
           </p>
         </motion.div>
 

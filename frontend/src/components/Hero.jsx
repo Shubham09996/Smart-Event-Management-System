@@ -23,12 +23,17 @@ export default function Hero() {
           <span className="block bg-gradient-to-r from-cyan-400 to-purple-500 text-transparent bg-clip-text">
             Your Events,
           </span>
-          <span className="block bg-gradient-to-r from-fuchsia-400 to-pink-500 text-transparent bg-clip-text">
-            <span className="inline">
+          
+          {/* FIX: 
+              1. Size increased: 'lg:text-5xl' -> 'lg:text-6xl' (Ab bada dikhega).
+              2. 'whitespace-nowrap': Taaki line break na ho.
+              3. 'h-[1.3em]': Image jump rokne ke liye height fix.
+          */}
+          <span className="block h-[1.3em] text-4xl sm:text-5xl lg:text-6xl bg-gradient-to-r from-fuchsia-400 to-pink-500 text-transparent bg-clip-text whitespace-nowrap overflow-visible mt-2">
+            <span className="inline-block py-1">
               <Typewriter
                 words={[
                   "One Smart Platform",
-                  "AI-Powered Events",
                   "Seamless Collaboration",
                 ]}
                 loop={true}
@@ -43,13 +48,13 @@ export default function Hero() {
         </h1>
 
         <motion.p
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          className="mt-6 md:mt-8 text-gray-300 text-base sm:text-lg md:text-xl"
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="text-lg md:text-xl text-indigo-200 leading-relaxed text-center max-w-2xl mx-auto md:mx-0 mt-6"
         >
-          Revolutionize college event management with AI-powered registration,
-          real-time analytics, and seamless QR code integration.
+          Revolutionize college event management with registration,
+          seamless check-ins, and insightful analytics.
         </motion.p>
 
         <motion.div
@@ -82,7 +87,7 @@ export default function Hero() {
         initial={{ opacity: 0, x: 50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8, delay: 0.9 }}
-        className="relative z-10 mt-10 md:mt-0 w-full max-w-sm sm:max-w-md md:max-w-xl lg:max-w-[700px] mx-auto md:mx-0"
+        className="relative z-10 mt-10 md:mt-0 w-full max-w-sm sm:max-w-md md:max-w-xl lg:max-w-[600px] mx-auto md:mx-0 md:ml-auto md:pr-4"
       >
         <img
           src="/hero.png"
