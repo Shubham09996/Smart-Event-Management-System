@@ -10,9 +10,9 @@ import Sidebar from "../components/organizerDashboard/Sidebar";
 import Topbar from "../components/organizerDashboard/Topbar";
 import StatsCards from "../components/organizerDashboard/StatsCards";
 import CreateEventCard from "../components/organizerDashboard/CreateEventCard";
-import QRPassGenerator from "../components/organizerDashboard/QRPassGenerator";
 import ManageEvents from "../components/organizerDashboard/ManageEvents";
 import OrganizerProfile from "../components/organizerDashboard/OrganizerProfile";
+import QrScanner from "../components/common/QrScanner";
 
 const OrganizerDashboardPage = () => {
   const { user, isAuthenticated, loading: authLoading } = useAuth();
@@ -22,6 +22,8 @@ const OrganizerDashboardPage = () => {
     return params.get("page") || "dashboard";
   });
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false); // New state for mobile sidebar
+  const [scannedQrData, setScannedQrData] = useState(null); // New state for scanned QR data
+  const [showVerificationModal, setShowVerificationModal] = useState(false); // New state for modal visibility
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -82,6 +84,20 @@ const OrganizerDashboardPage = () => {
 
   const handleEventUpdated = () => {
     fetchEvents();
+  };
+
+  const handleVerification = () => {
+    console.log("Verifying QR Data:", scannedQrData);
+    // Implement your verification logic here.
+    // After verification, you might want to clear the scanned data:
+    setScannedQrData(null);
+    alert(`Verification initiated for: ${scannedQrData}`);
+  };
+
+  const onScanResult = (decodedText, decodedResult) => {
+    console.log("QR Code Scanned:", decodedText);
+    setScannedQrData(decodedText);
+    setShowVerificationModal(false); // Close the modal after a successful scan
   };
 
   const pageVariants = {
@@ -172,9 +188,17 @@ const OrganizerDashboardPage = () => {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.1 }}
-                  className="text-3xl font-bold text-purple-400"
+                  className="text-3xl font-bold text-purple-400 relative"
                 >
                   Hello, {user?.name || "Organizer"}!
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setShowVerificationModal(true)}
+                    className="mt-4 md:mt-0 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg transition-all duration-300 ease-in-out transform hover:-translate-y-1 text-sm md:absolute md:top-0 md:right-0"
+                  >
+                    Verify Pass
+                  </motion.button>
                 </motion.h2>
                 <motion.p
                   initial={{ opacity: 0, y: -10 }}
@@ -205,13 +229,6 @@ const OrganizerDashboardPage = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.5 }}
                   className="mb-6"
-                >
-                  <QRPassGenerator events={events} />
-                </motion.div>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.6 }}
                 >
                   <ManageEvents events={events} onEventDeleted={handleEventDeleted} onEventUpdated={handleEventUpdated} />
                 </motion.div>
@@ -358,34 +375,6 @@ const OrganizerDashboardPage = () => {
               </motion.div>
             )}
 
-            {activePage === "verify-pass" && (
-              <motion.div
-                key="verify-pass"
-                variants={pageVariants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                transition={{ duration: 0.4 }}
-                className="bg-[#111827] rounded-2xl p-6 shadow-md"
-              >
-                <motion.h2
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.1 }}
-                  className="text-2xl font-bold mb-4"
-                >
-                  Verify Pass
-                </motion.h2>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                >
-                  <QRPassGenerator events={events} />
-                </motion.div>
-              </motion.div>
-            )}
-
             {activePage === "login" && (
               <motion.div
                 key="login"
@@ -419,6 +408,72 @@ const OrganizerDashboardPage = () => {
           </AnimatePresence>
         </div>
       </div>
+      <AnimatePresence>
+        {showVerificationModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+            onClick={() => setShowVerificationModal(false)} // Close modal on overlay click
+          >
+            <motion.div
+              initial={{ y: -50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 50, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 200, damping: 20 }}
+              className="bg-[#111827] rounded-2xl p-6 shadow-2xl relative max-w-md w-full"
+              onClick={(e) => e.stopPropagation()} // Prevent modal from closing when clicking inside
+            >
+              <button
+                onClick={() => setShowVerificationModal(false)}
+                className="absolute top-4 right-4 text-gray-400 hover:text-white focus:outline-none"
+              >
+                <Menu className="w-6 h-6 rotate-45" /> {/* Use Menu icon rotated for 'X' */}
+              </button>
+              <h2 className="text-2xl font-bold mb-4 text-purple-400">Verify Pass</h2>
+              {!scannedQrData && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <QrScanner onResult={onScanResult} />
+                </motion.div>
+              )}
+
+              {scannedQrData && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <h3 className="text-xl font-bold mb-2 text-indigo-300">Scanned Data:</h3>
+                  <p className="text-white break-words mb-4">{scannedQrData}</p>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleVerification}
+                    className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow-lg transition-all duration-300 ease-in-out transform hover:-translate-y-1"
+                  >
+                    Verify
+                  </motion.button>
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setScannedQrData(null)}
+                    className="ml-4 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl shadow-lg transition-all duration-300 ease-in-out transform hover:-translate-y-1"
+                  >
+                    Clear
+                  </motion.button>
+                </motion.div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };

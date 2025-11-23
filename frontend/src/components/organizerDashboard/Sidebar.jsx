@@ -100,18 +100,6 @@ const Sidebar = ({ active, setActivePage, setMobileSidebarOpen }) => {
           >
             Stay updated with campus events and workshops.
           </motion.p>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 400, damping: 10, delay: 1.0 }}
-            onClick={() => {
-              navigate("/organizer?page=verify-pass");
-              setMobileSidebarOpen(false); // Close sidebar on navigation
-            }}
-            className="mt-3 w-full flex items-center justify-center gap-2 text-sm bg-white/10 hover:bg-white/15 text-white py-2 rounded-xl transition"
-          >
-            <ShieldCheck size={16} /> Verify Pass
-          </motion.button>
         </div>
 
         {/* Logout */}
