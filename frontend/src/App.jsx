@@ -6,6 +6,9 @@ import Features from "./components/Features";
 import Stats from "./components/Stats";
 import Footer from "./components/Footer";
 import BackgroundFlow from "./components/BackgroundFlow";
+import HowItWorks from "./components/HowItWorks";
+import LandingEvents from "./components/LandingEvents";
+import CtaSection from "./components/CtaSection";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage"; // New import
@@ -25,7 +28,7 @@ export default function App() {
     <Router>
       <BackgroundFlow>
         <AuthProvider>
-          <div className="bg-[#0a0a0f] text-white min-h-screen">
+          <div className="bg-slate-50 text-slate-900 min-h-screen">
             <Navbar />
 
             <Routes>
@@ -41,6 +44,9 @@ export default function App() {
                     >
                       <Hero />
                     </motion.div>
+                    
+                    <HowItWorks />
+                    
                     <motion.div
                       initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -48,6 +54,9 @@ export default function App() {
                     >
                       <Features />
                     </motion.div>
+                    
+                    <LandingEvents />
+                    
                     <motion.div
                       initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -55,6 +64,9 @@ export default function App() {
                     >
                       <Stats />
                     </motion.div>
+                    
+                    <CtaSection />
+                    
                     <motion.div
                       initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}

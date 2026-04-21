@@ -18,7 +18,7 @@ export default function BackgroundFlow({ children }) {
         style={{
           background: `radial-gradient(
             500px circle at ${cursor.x}px ${cursor.y}px,
-            rgba(99,102,241,0.15),
+            rgba(99,102,241,0.08),
             transparent 70%
           )`,
         }}

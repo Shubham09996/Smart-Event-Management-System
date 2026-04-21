@@ -3,80 +3,84 @@ import ContactForm from "../components/ContactForm";
 import ContactInfo from "../components/ContactInfo";
 import OfficeHours from "../components/OfficeHours";
 import Footer from "../components/Footer";
+import { Sparkles } from "lucide-react";
 
 export default function ContactPage() {
-  const fadeUp = {
-    hidden: { opacity: 0, y: 40 },
-    visible: { opacity: 1, y: 0 },
-  };
-
   return (
     <motion.div
-      initial="hidden"
-      animate="visible"
-      transition={{ duration: 0.8 }}
-      className="pt-28 px-4 sm:px-6 md:px-10 lg:px-16 bg-gradient-to-b from-dark via-dark/95 to-dark text-white min-h-screen flex flex-col"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="bg-slate-50 min-h-screen text-slate-900 overflow-x-hidden"
     >
-      {/* Heading */}
-      <motion.h1
-        initial="hidden"
-        animate="visible"
-        variants={fadeUp}
-        transition={{ duration: 0.7 }}
-        className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-center leading-tight mb-4 sm:mb-6"
-      >
-        <span className="block bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 text-transparent bg-clip-text">
-          Get in Touch
-        </span>
-      </motion.h1>
+      {/* 🚀 PREMIUM HERO SECTION */}
+      <section className="relative pt-32 pb-16 md:pt-44 md:pb-24 px-4 overflow-hidden">
+        {/* Mesh Background */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-indigo-200/40 rounded-full blur-[120px] animate-pulse"></div>
+          <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-purple-200/40 rounded-full blur-[120px]"></div>
+        </div>
 
-      {/* Subtitle */}
-      <motion.p
-        initial="hidden"
-        animate="visible"
-        variants={fadeUp}
-        transition={{ delay: 0.3, duration: 0.8 }}
-        className="text-center text-gray-300 mb-12 sm:mb-16 max-w-xl mx-auto text-sm sm:text-base md:text-lg"
-      >
-        Have questions? We'd love to hear from you. Send us a message and we'll
-        respond as soon as possible.
-      </motion.p>
-
-      {/* Main Section */}
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={fadeUp}
-        transition={{ delay: 0.5, duration: 0.8 }}
-        className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 mb-16 md:mb-20"
-      >
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={fadeUp}
-          transition={{ delay: 0.7, duration: 0.8 }}
-        >
-          <ContactForm />
-        </motion.div>
-        <div className="flex flex-col gap-6 sm:gap-8">
+        <div className="relative z-10 max-w-7xl mx-auto text-center">
           <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={fadeUp}
-            transition={{ delay: 0.9, duration: 0.8 }}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
           >
-            <ContactInfo />
-          </motion.div>
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={fadeUp}
-            transition={{ delay: 1.1, duration: 0.8 }}
-          >
-            <OfficeHours />
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-gray-200 shadow-sm text-xs font-black uppercase tracking-[0.2em] mb-8 text-slate-500">
+              <Sparkles size={14} className="text-indigo-500" />
+              We're Here for You
+            </div>
+            
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-[950] tracking-[-0.04em] leading-[0.95] text-slate-900 mb-8 max-w-4xl mx-auto">
+              Get in <br/>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 italic">
+                Touch.
+              </span>
+            </h1>
+            
+            <p className="text-lg md:text-xl text-slate-600 font-medium max-w-2xl mx-auto mb-12">
+              Have a question, feedback, or just want to say hello? Our team is always ready to assist you in making your campus experience better.
+            </p>
           </motion.div>
         </div>
-      </motion.div>
+      </section>
+
+      {/* 🧩 MAIN CONTENT GRID */}
+      <section className="max-w-7xl mx-auto px-4 md:px-10 mb-32">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+          
+          {/* Left Side: Premium Contact Form */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <ContactForm />
+          </motion.div>
+
+          {/* Right Side: Contact Info & Hours */}
+          <div className="flex flex-col gap-8 md:gap-10">
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <ContactInfo />
+            </motion.div>
+            
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              <OfficeHours />
+            </motion.div>
+          </div>
+        </div>
+      </section>
 
       {/* Footer */}
       <Footer />

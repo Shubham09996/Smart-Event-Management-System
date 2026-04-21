@@ -4,6 +4,7 @@ import { Lock, Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../utils/api";
 import toast from 'react-hot-toast';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState("");
@@ -15,7 +16,7 @@ export default function ResetPasswordPage() {
   const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate();
-  const { resettoken } = useParams(); // Get resettoken from URL
+  const { resettoken } = useParams();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,7 +34,7 @@ export default function ResetPasswordPage() {
     try {
       const { data } = await api.put(`/users/resetpassword/${resettoken}`, { password, confirmPassword });
       setSuccess(true);
-      toast.success(data.data);
+      toast.success(data.data || "Password reset successful!");
       setTimeout(() => {
         navigate("/login");
       }, 3000);
@@ -46,121 +47,141 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f] text-white px-4 py-10 sm:py-16 md:pt-20">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="w-full max-w-sm sm:max-w-md bg-[#1a1a24] rounded-2xl p-6 sm:p-8 shadow-lg"
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 pt-28 md:p-8 md:pt-32">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="w-full max-w-6xl bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.08)] overflow-hidden flex flex-col md:flex-row border border-gray-100 min-h-[600px] mt-4"
       >
-        <div className="flex flex-col items-center mb-5 sm:mb-6">
-          <div className="bg-gradient-to-r from-purple-500 to-indigo-500 p-3 sm:p-4 rounded-full mb-3 sm:mb-4">
-            <Lock size={24} sm:size={32} />
+        
+        {/* Left Side: Lottie Animation Container */}
+        <div className="hidden md:flex md:w-1/2 bg-indigo-50/50 items-center justify-center p-12 relative overflow-hidden">
+          {/* subtle background decoration */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-purple-200/40 rounded-full blur-3xl -mr-20 -mt-20"></div>
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-200/40 rounded-full blur-3xl -ml-20 -mb-20"></div>
+          
+          <div className="relative z-10 w-full h-full flex flex-col items-center justify-center">
+            <h2 className="text-3xl font-extrabold text-indigo-900 mb-2 text-center">Secure Your Account</h2>
+            <p className="text-indigo-700 font-medium text-center mb-8 max-w-xs">Create a strong, new password to ensure your account's safety.</p>
+            
+            <div className="w-full max-w-sm aspect-square relative drop-shadow-xl">
+              <DotLottieReact
+                src="https://lottie.host/056f7d74-d795-4d28-b7e7-e7141c6a8c0d/0nbEyjSFgn.lottie"
+                loop
+                autoplay
+              />
+            </div>
           </div>
-          <motion.h2
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="text-xl sm:text-2xl font-bold text-purple-400"
-          >
-            Reset Password
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-            className="text-xs sm:text-sm text-gray-400 mt-1 text-center"
-          >
-            Enter your new password below.
-          </motion.p>
         </div>
 
-        {success ? (
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-green-500 text-center mt-3 text-xs sm:text-sm"
-          >
-            Password reset successful! Redirecting to login...
-          </motion.p>
-        ) : (
-          <form className="space-y-3 sm:space-y-4" onSubmit={handleSubmit}>
-            {/* New Password */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4, delay: 0.6 }}
-              className="relative"
-            >
-              <Lock className="absolute top-1/2 -translate-y-1/2 left-3 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="New Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-10 pr-10 py-2 sm:py-2.5 rounded-xl bg-[#0f0f16] border border-white/20 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition text-sm"
-                required
-              />
-              <button
-                type="button"
-                className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-400 p-1"
-                onClick={() => setShowPassword(!showPassword)}
+        {/* Right Side: Reset Form */}
+        <div className="w-full md:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col justify-center">
+          
+          <div className="max-w-md w-full mx-auto">
+            
+            <div className="mb-8">
+              <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center mb-6 shadow-md shadow-indigo-200">
+                <Lock size={24} className="text-white" />
+              </div>
+              <h2 className="text-3xl font-extrabold text-slate-900 mb-2 tracking-tight">Reset Password</h2>
+              <p className="text-slate-500 font-medium">Please enter your new password below.</p>
+            </div>
+
+            {success ? (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }} 
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-green-50 text-green-700 p-6 rounded-2xl border border-green-200 text-center flex flex-col items-center shadow-sm"
               >
-                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </motion.div>
+                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-3">
+                  <Lock size={24} className="text-green-600" />
+                </div>
+                <h3 className="text-lg font-bold mb-1">Password Changed!</h3>
+                <p className="text-sm font-medium opacity-80">You will be redirected to the login page momentarily.</p>
+              </motion.div>
+            ) : (
+              <form className="space-y-4" onSubmit={handleSubmit}>
+                {/* New Password */}
+                <div>
+                  <label className="block text-sm font-bold text-slate-700 mb-1.5">New Password</label>
+                  <div className="relative group">
+                    <Lock className="absolute top-1/2 -translate-y-1/2 left-4 text-slate-400 w-5 h-5 transition-colors group-focus-within:text-indigo-500" />
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full pl-11 pr-12 py-3.5 rounded-xl bg-slate-50 border border-gray-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 focus:outline-none transition-all text-slate-900 font-semibold tracking-wide placeholder:font-normal placeholder:tracking-normal placeholder:text-slate-400"
+                      required
+                    />
+                    <button
+                      type="button"
+                      className="absolute top-1/2 -translate-y-1/2 right-4 text-slate-400 hover:text-indigo-600 transition-colors p-1"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </div>
 
-            {/* Confirm New Password */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4, delay: 0.7 }}
-              className="relative"
-            >
-              <Lock className="absolute top-1/2 -translate-y-1/2 left-3 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                placeholder="Confirm New Password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full pl-10 pr-10 py-2 sm:py-2.5 rounded-xl bg-[#0f0f16] border border-white/20 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition text-sm"
-                required
-              />
-              <button
-                type="button"
-                className="absolute top-1/2 -translate-y-1/2 right-3 text-gray-400 p-1"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              >
-                {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </motion.div>
+                {/* Confirm New Password */}
+                <div>
+                  <label className="block text-sm font-bold text-slate-700 mb-1.5">Confirm Password</label>
+                  <div className="relative group">
+                    <Lock className="absolute top-1/2 -translate-y-1/2 left-4 text-slate-400 w-5 h-5 transition-colors group-focus-within:text-indigo-500" />
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="w-full pl-11 pr-12 py-3.5 rounded-xl bg-slate-50 border border-gray-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 focus:outline-none transition-all text-slate-900 font-semibold tracking-wide placeholder:font-normal placeholder:tracking-normal placeholder:text-slate-400"
+                      required
+                    />
+                    <button
+                      type="button"
+                      className="absolute top-1/2 -translate-y-1/2 right-4 text-slate-400 hover:text-indigo-600 transition-colors p-1"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    >
+                      {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
+                </div>
 
-            {error && <p className="text-red-500 text-center mt-3 text-xs sm:text-sm">{error}</p>}
+                {error && (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+                    className="bg-red-50 text-red-600 text-sm font-bold p-3.5 rounded-xl border border-red-100 mt-2 flex items-center justify-center text-center"
+                  >
+                    {error}
+                  </motion.div>
+                )}
 
-            <motion.button
-              whileHover={{ scale: 1.05, boxShadow: "0px 0px 25px rgba(138, 90, 246, 0.6)" }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
-              type="submit"
-              className="w-full py-2.5 sm:py-3 mt-2 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-xl font-bold text-sm sm:text-base text-white transition"
-              disabled={loading}
-            >
-              {loading ? "Resetting..." : "Reset Password"}
-            </motion.button>
-          </form>
-        )}
+                {/* Submit */}
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-4 mt-2 bg-slate-900 text-white rounded-xl font-extrabold text-base shadow-lg shadow-slate-200 hover:bg-slate-800 transition-all disabled:opacity-70 flex justify-center items-center"
+                >
+                  {loading ? (
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    "Reset Password"
+                  )}
+                </motion.button>
+              </form>
+            )}
 
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: success ? 0.5 : 0.9 }}
-          className="mt-5 sm:mt-6 text-center text-gray-400 text-xs sm:text-sm"
-        >
-          Remember your password?{" "}
-          <Link to="/login" className="text-purple-500 hover:underline">
-            Login
-          </Link>
-        </motion.p>
+            <div className="mt-8 text-center text-slate-500 font-medium text-sm">
+              <Link to="/login" className="text-indigo-600 font-bold hover:text-indigo-700 transition">
+                Back to Login
+              </Link>
+            </div>
+            
+          </div>
+        </div>
       </motion.div>
     </div>
   );

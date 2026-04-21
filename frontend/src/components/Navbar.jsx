@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { User2, LogOut, Menu, X, LayoutDashboard, CalendarDays, Layers, Bell, Tags, BarChart3, Settings } from "lucide-react"; // Added Menu and X icons
@@ -7,6 +7,7 @@ import { AnimatePresence } from "framer-motion"; // Added AnimatePresence for mo
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, isAuthenticated, logout } = useAuth();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false); // New state for mobile menu
@@ -52,8 +53,8 @@ export default function Navbar() {
   // Nav Links
   const navLinks = [
     { path: "/events", label: "Events" },
-    { path: "/about", label: "About Us", highlight: true }, // Highlighted link
-    { path: "/contact", label: "Contact Us" }, // 👈 Contact page link
+    { path: "/about", label: "About Us" },
+    { path: "/contact", label: "Contact Us" },
   ];
 
   // New: Dashboard Nav Links for authenticated users in mobile menu
@@ -79,7 +80,7 @@ export default function Navbar() {
       initial={{ y: -50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6 }}
-      className="flex justify-between items-center px-4 md:px-10 py-4 md:py-6 bg-gray-900 text-white fixed top-0 left-0 w-full z-50 border-b border-white/10"
+      className="flex justify-between items-center px-6 md:px-8 py-3 md:py-4 bg-white/90 backdrop-blur-xl text-gray-900 fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-50 border border-gray-200 shadow-[0_8px_30px_rgb(0,0,0,0.06)] rounded-full"
     >
       {/* Logo */}
       <Link to="/">
@@ -89,19 +90,24 @@ export default function Navbar() {
           transition={{ duration: 0.6 }}
           className="text-lg md:text-xl font-bold flex items-center gap-2"
         >
-          <span className="text-primary">📅 SmartEvents</span>
+          <span className="text-slate-900 font-extrabold text-xl md:text-2xl tracking-tight flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
+              <span className="text-white text-base">✨</span>
+            </div>
+            SmartEvents
+          </span>
         </motion.div>
       </Link>
 
       {/* Hamburger Menu Icon for Mobile */}
       <div className="md:hidden flex items-center">
-        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-white focus:outline-none p-2">
+        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-gray-900 focus:outline-none p-2">
           {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
       {/* Desktop Links */}
-      <ul className="hidden md:flex gap-4 lg:gap-8 text-gray-300">
+      <ul className="hidden md:flex items-center gap-2 lg:gap-6 text-slate-600 font-medium">
         {navLinks.map((link, i) => (
           <motion.li
             key={link.path || link.label}
@@ -112,9 +118,9 @@ export default function Navbar() {
           >
             <Link
               to={link.path}
-              className={`hover:text-white transition ${
-                link.highlight
-                  ? "text-primary font-medium hover:text-primary"
+              className={`px-4 py-2 rounded-full hover:bg-slate-50 hover:text-indigo-600 transition-colors ${
+                location.pathname === link.path
+                  ? "text-indigo-600 font-semibold bg-indigo-50"
                   : ""
               }`}
             >
@@ -130,7 +136,7 @@ export default function Navbar() {
             animate="visible"
             variants={navItemVariants}
           >
-            <Link to={getDashboardPath(user.role)} className="hover:text-white transition">
+            <Link to={getDashboardPath(user.role)} className="hover:text-indigo-600 transition">
               Dashboard
             </Link>
           </motion.li>
@@ -158,17 +164,17 @@ export default function Navbar() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 10 }}
                 transition={{ duration: 0.2 }}
-                className="absolute right-0 mt-2 w-40 md:w-48 bg-[#1f2937] rounded-md shadow-lg py-1 z-10"
+                className="absolute right-0 mt-2 w-40 md:w-48 bg-white border border-gray-100 rounded-md shadow-lg py-1 z-10"
               >
                 <button
                   onClick={handleProfileView}
-                  className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-gray-700"
+                  className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                 >
                   <User2 size={16} /> Profile
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700"
+                  className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-50"
                 >
                   <LogOut size={16} /> Logout
                 </button>
@@ -185,7 +191,7 @@ export default function Navbar() {
             >
               <Link
                 to="/login"
-                className="hover:text-white transition"
+                className="px-5 py-2.5 rounded-full hover:bg-slate-50 hover:text-indigo-600 text-slate-700 font-semibold transition-colors"
               >
                 Login
               </Link>
@@ -198,7 +204,7 @@ export default function Navbar() {
             >
               <Link
                 to="/signup"
-                className="hover:text-white transition"
+                className="px-6 py-2.5 bg-slate-900 hover:bg-indigo-600 text-white rounded-full font-semibold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 transform"
               >
                 Sign Up
               </Link>
@@ -215,18 +221,18 @@ export default function Navbar() {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="fixed top-0 right-0 h-full w-56 sm:w-64 bg-gray-800 z-40 p-5 pt-20 shadow-lg md:hidden overflow-y-auto"
+            className="fixed top-0 right-0 h-full w-56 sm:w-64 bg-white border-l border-gray-100 z-40 p-5 pt-20 shadow-2xl md:hidden overflow-y-auto"
           >
             {/* Close button for mobile menu */}
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setMobileMenuOpen(false)}
-              className="absolute top-5 right-5 text-gray-400 hover:text-white focus:outline-none"
+              className="absolute top-5 right-5 text-gray-500 hover:text-gray-900 focus:outline-none"
             >
               <X size={24} />
             </motion.button>
-            <ul className="flex flex-col gap-5 text-gray-300">
+            <ul className="flex flex-col gap-5 text-gray-600 font-medium">
               {navLinks.map((link, i) => (
                 <motion.li
                   key={link.path || link.label}
@@ -238,8 +244,8 @@ export default function Navbar() {
                   <Link
                     to={link.path}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`block py-2 text-lg hover:text-white transition ${
-                      link.highlight ? "text-primary font-medium hover:text-primary" : ""
+                    className={`block py-2 text-lg hover:text-indigo-600 transition ${
+                      location.pathname === link.path ? "text-primary font-medium hover:text-indigo-600" : ""
                     }`}
                   >
                     {link.label}
@@ -261,7 +267,7 @@ export default function Navbar() {
                         <Link
                           to={`${getDashboardPath(user?.role)}?page=${link.page}`}
                           onClick={() => setMobileMenuOpen(false)}
-                          className="flex items-center gap-2 w-full text-left py-2 text-lg text-gray-300 hover:text-white"
+                          className="flex items-center gap-2 w-full text-left py-2 text-lg text-gray-600 hover:text-indigo-600"
                         >
                           <link.icon size={20} /> {link.label}
                         </Link>
@@ -279,7 +285,7 @@ export default function Navbar() {
                         <Link
                           to={`${getDashboardPath(user?.role)}?page=${link.page}`}
                           onClick={() => setMobileMenuOpen(false)}
-                          className="flex items-center gap-2 w-full text-left py-2 text-lg text-gray-300 hover:text-white"
+                          className="flex items-center gap-2 w-full text-left py-2 text-lg text-gray-600 hover:text-indigo-600"
                         >
                           <link.icon size={20} /> {link.label}
                         </Link>
@@ -299,13 +305,13 @@ export default function Navbar() {
                   <Link
                     to={`${getDashboardPath(user?.role)}?page=profile`} // Profile link goes to dashboard profile page
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-2 w-full text-left py-2 text-lg text-gray-300 hover:text-white"
+                    className="flex items-center gap-2 w-full text-left py-2 text-lg text-gray-600 hover:text-indigo-600"
                   >
                     <User2 size={20} /> Profile
                   </Link>
                   <button
                     onClick={() => {handleLogout(); setMobileMenuOpen(false);}}
-                    className="flex items-center gap-2 w-full text-left py-2 text-lg text-red-400 hover:text-white"
+                    className="flex items-center gap-2 w-full text-left py-2 text-lg text-red-500 hover:text-red-700"
                   >
                     <LogOut size={20} /> Logout
                   </button>
@@ -321,7 +327,7 @@ export default function Navbar() {
                     <Link
                       to="/login"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block py-2 text-lg hover:text-white transition"
+                      className="block py-2 text-lg hover:text-indigo-600 transition"
                     >
                       Login
                     </Link>
@@ -335,7 +341,7 @@ export default function Navbar() {
                     <Link
                       to="/signup"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="block py-2 text-lg hover:text-white transition"
+                      className="block py-2 text-lg hover:text-indigo-600 transition"
                     >
                       Sign Up
                     </Link>

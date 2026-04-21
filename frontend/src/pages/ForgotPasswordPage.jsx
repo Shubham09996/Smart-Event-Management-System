@@ -4,6 +4,7 @@ import { AtSign, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 import api from "../utils/api";
 import toast from 'react-hot-toast';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -30,79 +31,107 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f] text-white px-4 py-10 sm:py-16 md:pt-20">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="w-full max-w-sm sm:max-w-md bg-[#1a1a24] rounded-2xl p-6 sm:p-8 shadow-lg"
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 pt-28 md:p-8 md:pt-32">
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="w-full max-w-6xl bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.08)] overflow-hidden flex flex-col md:flex-row border border-gray-100 min-h-[600px] mt-4"
       >
-        <div className="flex flex-col items-center mb-5 sm:mb-6">
-          <div className="bg-gradient-to-r from-purple-500 to-indigo-500 p-3 sm:p-4 rounded-full mb-3 sm:mb-4">
-            <Mail size={24} sm:size={32} />
+        
+        {/* Left Side: Lottie Animation Container */}
+        <div className="hidden md:flex md:w-1/2 bg-indigo-50/50 items-center justify-center p-12 relative overflow-hidden">
+          {/* subtle background decoration */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-purple-200/40 rounded-full blur-3xl -mr-20 -mt-20"></div>
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-200/40 rounded-full blur-3xl -ml-20 -mb-20"></div>
+          
+          <div className="relative z-10 w-full h-full flex flex-col items-center justify-center">
+            <h2 className="text-3xl font-extrabold text-indigo-900 mb-2 text-center">Forgot Password?</h2>
+            <p className="text-indigo-700 font-medium text-center mb-8 max-w-xs">Don't worry, we'll send you reset instructions to your email.</p>
+            
+            <div className="w-full max-w-sm aspect-square relative drop-shadow-xl">
+              <DotLottieReact
+                src="https://lottie.host/056f7d74-d795-4d28-b7e7-e7141c6a8c0d/0nbEyjSFgn.lottie"
+                loop
+                autoplay
+              />
+            </div>
           </div>
-          <motion.h2
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="text-xl sm:text-2xl font-bold text-purple-400"
-          >
-            Forgot Password
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-            className="text-xs sm:text-sm text-gray-400 mt-1 text-center"
-          >
-            Enter your email to receive a password reset link.
-          </motion.p>
         </div>
 
-        <form className="space-y-3 sm:space-y-4" onSubmit={handleSubmit}>
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.4, delay: 0.6 }}
-            className="relative"
-          >
-            <AtSign className="absolute top-1/2 -translate-y-1/2 left-3 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
-            <input
-              type="email"
-              placeholder="your.email@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full pl-10 pr-3 py-2 sm:py-2.5 rounded-xl bg-[#0f0f16] border border-white/20 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 outline-none transition text-sm"
-              required
-            />
-          </motion.div>
+        {/* Right Side: Recovery Form */}
+        <div className="w-full md:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col justify-center">
+          
+          <div className="max-w-md w-full mx-auto">
+            
+            <div className="mb-8">
+              <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center mb-6 shadow-md shadow-indigo-200">
+                <Mail size={24} className="text-white" />
+              </div>
+              <h2 className="text-3xl font-extrabold text-slate-900 mb-2 tracking-tight">Recovery Email</h2>
+              <p className="text-slate-500 font-medium">Please enter your registered email address.</p>
+            </div>
 
-          {error && <p className="text-red-500 text-center mt-3 text-xs sm:text-sm">{error}</p>}
-          {message && <p className="text-green-500 text-center mt-3 text-xs sm:text-sm">{message}</p>}
+            <form className="space-y-4" onSubmit={handleSubmit}>
+              {/* Email */}
+              <div>
+                <label className="block text-sm font-bold text-slate-700 mb-1.5">Email Address</label>
+                <div className="relative group">
+                  <AtSign className="absolute top-1/2 -translate-y-1/2 left-4 text-slate-400 w-5 h-5 transition-colors group-focus-within:text-indigo-500" />
+                  <input
+                    type="email"
+                    placeholder="you@college.edu"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full pl-11 pr-4 py-3.5 rounded-xl bg-slate-50 border border-gray-200 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 focus:outline-none transition-all text-slate-900 font-semibold placeholder:font-normal placeholder:text-slate-400"
+                    required
+                  />
+                </div>
+              </div>
 
-          <motion.button
-            whileHover={{ scale: 1.05, boxShadow: "0px 0px 25px rgba(138, 90, 246, 0.6)" }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            type="submit"
-            className="w-full py-2.5 sm:py-3 mt-2 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-xl font-bold text-sm sm:text-base text-white transition"
-            disabled={loading}
-          >
-            {loading ? "Sending..." : "Send Reset Link"}
-          </motion.button>
-        </form>
+              {error && (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+                  className="bg-red-50 text-red-600 text-sm font-bold p-3.5 rounded-xl border border-red-100 mt-2 flex items-center justify-center"
+                >
+                  {error}
+                </motion.div>
+              )}
 
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.9 }}
-          className="mt-5 sm:mt-6 text-center text-gray-400 text-xs sm:text-sm"
-        >
-          Remember your password?{" "}
-          <Link to="/login" className="text-purple-500 hover:underline">
-            Login
-          </Link>
-        </motion.p>
+              {message && (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+                  className="bg-green-50 text-green-600 text-sm font-bold p-3.5 rounded-xl border border-green-100 mt-2 flex items-center justify-center text-center"
+                >
+                  {message}
+                </motion.div>
+              )}
+
+              {/* Submit */}
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                type="submit"
+                disabled={loading}
+                className="w-full py-4 mt-2 bg-slate-900 text-white rounded-xl font-extrabold text-base shadow-lg shadow-slate-200 hover:bg-slate-800 transition-all disabled:opacity-70 flex justify-center items-center"
+              >
+                {loading ? (
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  "Send Reset Link"
+                )}
+              </motion.button>
+            </form>
+
+            <div className="mt-8 text-center text-slate-500 font-medium text-sm">
+              Remember your password?{" "}
+              <Link to="/login" className="text-indigo-600 font-bold hover:text-indigo-700 transition ml-1">
+                Back to Login
+              </Link>
+            </div>
+            
+          </div>
+        </div>
       </motion.div>
     </div>
   );
