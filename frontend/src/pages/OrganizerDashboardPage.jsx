@@ -206,7 +206,7 @@ const OrganizerDashboardPage = () => {
       </AnimatePresence>
 
       {/* Desktop Sidebar (static) */}
-      <aside className="hidden md:flex flex-col w-72 bg-white border-r border-slate-200 p-6 sticky top-0 h-screen">
+      <aside className="hidden md:flex flex-col w-auto bg-white border-r border-slate-200 sticky top-0 h-screen">
         <Sidebar active={activePage} setActivePage={setActivePage} setMobileSidebarOpen={setMobileSidebarOpen} />
       </aside>
 

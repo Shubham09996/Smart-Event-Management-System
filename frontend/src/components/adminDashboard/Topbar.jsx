@@ -43,12 +43,12 @@ const Topbar = ({ setMobileSidebarOpen }) => {
 
   return (
     <motion.div
-      className="sticky top-0 z-40 backdrop-blur-md bg-white/80 border-b border-slate-200"
+      className="sticky top-4 lg:top-6 z-40 mx-4 lg:mx-8 mb-4 lg:mb-6 backdrop-blur-xl bg-white/80 border border-slate-200/60 shadow-[0_8px_40px_rgb(0,0,0,0.04)] rounded-[2rem]"
       initial={{ y: -60, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6 }}
     >
-      <div className="px-4 md:px-8 py-4 flex items-center justify-between">
+      <div className="px-5 py-3 lg:px-6 lg:py-4 flex items-center justify-between">
         {/* Hamburger menu for mobile */}
         <button
           onClick={() => setMobileSidebarOpen(true)}

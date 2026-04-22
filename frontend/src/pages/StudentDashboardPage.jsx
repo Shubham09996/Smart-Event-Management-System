@@ -1,7 +1,7 @@
 // 📂 src/pages/StudentDashboardPage.jsx
 import { useState, useEffect, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { LayoutDashboard, Bell, CalendarDays, UserRound, Calendar, Users, BarChart2, Award } from "lucide-react"; // Removed Settings, LogOut
+import { LayoutDashboard, Bell, CalendarDays, UserRound, Calendar, Users, BarChart2, Award, X } from "lucide-react"; // Removed Settings, LogOut
 import api from "../utils/api";
 import { useAuth } from "../context/AuthContext";
 import { useLocation } from "react-router-dom";
@@ -22,6 +22,7 @@ const StudentDashboardPage = () => {
     const params = new URLSearchParams(location.search);
     return params.get("page") || "dashboard";
   });
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [availableEvents, setAvailableEvents] = useState([]);
   const [registeredEvents, setRegisteredEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -246,12 +247,47 @@ const StudentDashboardPage = () => {
       transition={{ duration: 0.6 }}
       className="flex min-h-screen bg-slate-50 text-slate-900"
     >
-      {/* Sidebar */}
-      <Sidebar active={activePage} />
+      <AnimatePresence>
+        {mobileSidebarOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[60] md:hidden"
+            onClick={() => setMobileSidebarOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {mobileSidebarOpen && (
+          <motion.aside
+            initial={{ x: "-100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "-100%" }}
+            transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+            className="fixed inset-y-0 left-0 z-[70] flex flex-col w-auto bg-white border-r border-slate-200 shadow-2xl md:hidden"
+          >
+            {/* Close button inside mobile sidebar */}
+            <button
+              onClick={() => setMobileSidebarOpen(false)}
+              className="absolute top-6 right-6 text-slate-400 hover:text-slate-900 p-2 bg-slate-100 rounded-full z-[80]"
+            >
+              <X size={20} />
+            </button>
+            <Sidebar active={activePage} setMobileSidebarOpen={setMobileSidebarOpen} />
+          </motion.aside>
+        )}
+      </AnimatePresence>
+
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:flex flex-col w-auto bg-white border-r border-slate-200 sticky top-0 h-screen">
+        <Sidebar active={activePage} />
+      </aside>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
-        <Topbar />
+        <Topbar setMobileSidebarOpen={setMobileSidebarOpen} />
 
         {/* Page Wrapper */}
         <div className="p-4 md:p-8 space-y-8 overflow-y-auto max-w-[1600px] mx-auto w-full">
