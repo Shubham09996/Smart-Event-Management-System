@@ -10,6 +10,7 @@ const eventRoutes = require('./routes/eventRoutes');
 const categoryRoutes = require('./routes/categoryRoutes'); // Import category routes
 const adminRoutes = require('./routes/adminRoutes'); // Import admin routes
 const systemSettingRoutes = require('./routes/systemSettingRoutes'); // Import system setting routes
+const chatRoutes = require('./routes/chatRoutes'); // Import chat routes
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 
 const app = express();
@@ -40,6 +41,7 @@ app.use('/api/categories', categoryRoutes); // Use category routes
 app.use('/api/admin', adminRoutes); // Use admin routes
 app.use('/api/settings', systemSettingRoutes); // Use system setting routes
 app.use('/api/registrations', require('./routes/registrationRoutes')); // Use registration routes
+app.use('/api/chat', chatRoutes); // Use chat routes
 
 app.get('/', (req, res) => {
   res.send('API is running...');

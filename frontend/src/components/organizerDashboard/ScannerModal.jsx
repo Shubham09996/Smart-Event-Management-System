@@ -73,8 +73,46 @@ const ScannerModal = ({ isOpen, onClose, eventId }) => {
         </div>
 
         {isScanning ? (
-          <div className="overflow-hidden rounded-3xl border-4 border-indigo-50">
-            <div id="reader" className="w-full"></div>
+          <div>
+            <div className="overflow-hidden rounded-3xl border-4 border-indigo-50 mb-4 bg-slate-50 min-h-[250px]">
+              <div id="reader" className="w-full"></div>
+            </div>
+
+            <div className="relative flex items-center mb-4">
+              <div className="flex-grow border-t border-slate-100"></div>
+              <span className="flex-shrink-0 mx-4 text-slate-400 text-[10px] font-black tracking-[0.2em] uppercase">Or Enter Code</span>
+              <div className="flex-grow border-t border-slate-100"></div>
+            </div>
+
+            <div className="flex gap-2">
+              <input
+                 type="text"
+                 id="manual-qr-input"
+                 placeholder="e.g. 69E9-69E9-D13B"
+                 className="flex-1 px-4 py-3 rounded-2xl bg-slate-50 border border-slate-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 outline-none transition-all text-slate-900 font-bold text-sm uppercase"
+                 onKeyDown={(e) => {
+                   if (e.key === 'Enter') {
+                      const val = e.target.value.trim();
+                      if (val) {
+                         setIsScanning(false);
+                         verifyTicket(val);
+                      }
+                   }
+                 }}
+              />
+              <button 
+                onClick={() => {
+                  const val = document.getElementById('manual-qr-input')?.value.trim();
+                  if(val) {
+                    setIsScanning(false);
+                    verifyTicket(val);
+                  }
+                }}
+                className="bg-indigo-600 text-white px-6 py-3 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-indigo-700 transition"
+              >
+                Verify
+              </button>
+            </div>
           </div>
         ) : (
           <div className="text-center py-8">
@@ -82,11 +120,25 @@ const ScannerModal = ({ isOpen, onClose, eventId }) => {
               <motion.div initial={{ scale: 0.8 }} animate={{ scale: 1 }} className="space-y-4">
                 <CheckCircle size={64} className="text-emerald-500 mx-auto" />
                 <h3 className="text-2xl font-black text-slate-900">Valid Ticket!</h3>
-                <div className="bg-slate-50 p-6 rounded-2xl text-left border border-slate-100 shadow-inner">
-                  <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Attendee Name</p>
-                  <p className="font-bold text-slate-900 text-lg">{scanResult.attendee.name}</p>
-                  <p className="text-xs font-black text-slate-400 uppercase tracking-widest mt-4 mb-1">Roll / ID</p>
-                  <p className="font-bold text-slate-900">{scanResult.attendee.rollNo}</p>
+                <div className="bg-slate-50 p-6 rounded-2xl text-left border border-slate-100 shadow-inner space-y-4">
+                  <div>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Student Name</p>
+                    <p className="font-bold text-slate-900 text-lg">{scanResult.attendee?.name || "Unknown"}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Email Address</p>
+                    <p className="font-bold text-slate-900">{scanResult.attendee?.email || "N/A"}</p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Roll / Student ID</p>
+                      <p className="font-bold text-slate-900">{scanResult.attendee?.rollNo || "N/A"}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Department</p>
+                      <p className="font-bold text-slate-900">{scanResult.attendee?.department || "N/A"}</p>
+                    </div>
+                  </div>
                 </div>
               </motion.div>
             ) : (

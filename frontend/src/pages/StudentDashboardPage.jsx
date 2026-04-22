@@ -119,7 +119,7 @@ const StudentDashboardPage = () => {
         },
       };
 
-      await api.post(`/events/${eventId}/register`, {}, config);
+      await api.post(`/registrations/${eventId}`, {}, config);
 
       toast.success("Successfully registered for event!"); // Replaced alert with toast
       fetchEvents(); // Refresh events after successful registration

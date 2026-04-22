@@ -22,6 +22,7 @@ import AdminDashboardPage from "./pages/AdminDashboardPage";   // 👈 yaha impo
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./context/AuthContext";
 import { Toaster } from 'react-hot-toast'; // Import Toaster
+import AiChatbot from "./components/common/AiChatbot"; // Import Chatbot
 
 export default function App() {
   return (
@@ -153,6 +154,7 @@ export default function App() {
               </Route>
 
             </Routes>
+            <AiChatbot />
             <Toaster position="top-center" reverseOrder={false} /> {/* Toaster component */}
           </div>
         </AuthProvider>

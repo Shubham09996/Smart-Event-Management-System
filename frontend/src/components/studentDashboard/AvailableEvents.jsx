@@ -2,13 +2,19 @@ import { motion } from "framer-motion";
 import { Calendar, MapPin } from "lucide-react";
 import React, { useState } from 'react'; // Import useState
 import HackathonRegistrationForm from './HackathonRegistrationForm'; // Import the new component
+import CheckoutModal from './CheckoutModal';
 
 const AvailableEvents = ({ events, onRegister }) => {
   const [showHackathonModal, setShowHackathonModal] = useState(false);
   const [selectedHackathonEvent, setSelectedHackathonEvent] = useState(null);
+  const [showCheckoutModal, setShowCheckoutModal] = useState(false);
+  const [selectedPaidEvent, setSelectedPaidEvent] = useState(null);
 
   const handleRegisterClick = (event) => {
-    if (event.category === 'Hackathon') {
+    if (event.isPaid && event.ticketPrice > 0) {
+      setSelectedPaidEvent(event);
+      setShowCheckoutModal(true);
+    } else if (event.category === 'Hackathon') {
       setSelectedHackathonEvent(event);
       setShowHackathonModal(true);
     } else {
@@ -108,6 +114,23 @@ const AvailableEvents = ({ events, onRegister }) => {
           onRegister={onRegister} // Pass the original onRegister for actual registration after form submission
         />
       )}
+
+      {/* Payment Gateway Modal */}
+      <CheckoutModal
+        isOpen={showCheckoutModal}
+        onClose={() => setShowCheckoutModal(false)}
+        event={selectedPaidEvent}
+        onPaymentSuccess={(event) => {
+          setShowCheckoutModal(false);
+          // After payment, if it's a hackathon, route to Hackathon Form
+          if (event.category === 'Hackathon') {
+            setSelectedHackathonEvent(event);
+            setShowHackathonModal(true);
+          } else {
+            onRegister(event._id);
+          }
+        }}
+      />
     </motion.div>
   );
 };
