@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar, MapPin, Edit, Trash, X, Upload, Clock } from "lucide-react";
+import { Calendar, MapPin, Edit, Trash, X, Upload, Clock, QrCode, Download } from "lucide-react";
 import api from "../../utils/api";
 import { useAuth } from "../../context/AuthContext";
+import ScannerModal from "./ScannerModal";
 
 const ManageEvents = ({ events, onEventDeleted, onEventUpdated }) => {
   const { user, isAuthenticated } = useAuth();
@@ -18,7 +19,8 @@ const ManageEvents = ({ events, onEventDeleted, onEventUpdated }) => {
   const [categories, setCategories] = useState([]);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [categoriesError, setCategoriesError] = useState(null);
-
+  const [scannerOpen, setScannerOpen] = useState(false);
+  const [activeScanEventId, setActiveScanEventId] = useState(null);
   useEffect(() => {
     const fetchCategories = async () => {
       setCategoriesLoading(true);
@@ -128,6 +130,24 @@ const ManageEvents = ({ events, onEventDeleted, onEventUpdated }) => {
     }
   };
 
+  const handleExportCSV = async (eventId, title) => {
+    try {
+      const { data } = await api.get(`/registrations/${eventId}/export`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+        responseType: 'blob'
+      });
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${title.replace(/\s+/g, '_')}_Registrations.csv`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -182,6 +202,24 @@ const ManageEvents = ({ events, onEventDeleted, onEventUpdated }) => {
                        {event.category?.name || event.category || "General"}
                     </div>
                     <div className="flex gap-2">
+                       <motion.button
+                         whileHover={{ scale: 1.1 }}
+                         whileTap={{ scale: 0.9 }}
+                         onClick={() => { setActiveScanEventId(event._id); setScannerOpen(true); }}
+                         className="p-2.5 rounded-xl bg-slate-50 text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 transition-all border border-slate-100"
+                         title="Scan Attendee QR Codes"
+                       >
+                         <QrCode size={18} />
+                       </motion.button>
+                       <motion.button
+                         whileHover={{ scale: 1.1 }}
+                         whileTap={{ scale: 0.9 }}
+                         onClick={() => handleExportCSV(event._id, event.title)}
+                         className="p-2.5 rounded-xl bg-slate-50 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 transition-all border border-slate-100"
+                         title="Export CSV Report"
+                       >
+                         <Download size={18} />
+                       </motion.button>
                        <motion.button
                          whileHover={{ scale: 1.1 }}
                          whileTap={{ scale: 0.9 }}
@@ -432,6 +470,12 @@ const ManageEvents = ({ events, onEventDeleted, onEventUpdated }) => {
           </div>
         )}
       </AnimatePresence>
+
+      <ScannerModal 
+        isOpen={scannerOpen} 
+        onClose={() => setScannerOpen(false)} 
+        eventId={activeScanEventId} 
+      />
     </motion.div>
   );
 };

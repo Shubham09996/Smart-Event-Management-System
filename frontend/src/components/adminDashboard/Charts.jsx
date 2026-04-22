@@ -9,6 +9,7 @@ import {
   Legend,
 } from "recharts";
 import { motion } from "framer-motion";
+import { BarChart3, Activity } from "lucide-react";
 
 // Custom tooltip for better UX
 const CustomTooltip = ({ active, payload, label }) => {
@@ -16,10 +17,16 @@ const CustomTooltip = ({ active, payload, label }) => {
     return (
       <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-[0_10px_40px_rgb(0,0,0,0.08)] backdrop-blur-md">
         <p className="text-slate-900 font-black mb-1">{label}</p>
-        <p className="text-indigo-600 font-bold flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full bg-indigo-600"></div>
-          Events: {payload[0].value}
-        </p>
+        <div className="space-y-1">
+          <p className="text-indigo-600 font-bold flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-indigo-600"></span>
+            Events: {payload[0]?.value}
+          </p>
+          <p className="text-emerald-500 font-bold flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+            Regs: {payload[1]?.value || 0}
+          </p>
+        </div>
       </div>
     );
   }
@@ -77,6 +84,12 @@ const Charts = ({ categoryCounts, monthCounts }) => {
               <Bar 
                 dataKey="events" 
                 fill="#4f46e5" 
+                radius={[10, 10, 10, 10]} 
+                barSize={32}
+              />
+              <Bar 
+                dataKey="registrations" 
+                fill="#10b981" 
                 radius={[10, 10, 10, 10]} 
                 barSize={32}
               />

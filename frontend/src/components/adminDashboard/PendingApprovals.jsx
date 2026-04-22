@@ -153,4 +153,4 @@ const PendingApprovals = ({ pendingEvents, onEventApproved, onEventRejected }) =
 
 export default PendingApprovals;
 
-export default PendingApprovals;
+

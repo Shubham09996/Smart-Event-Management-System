@@ -366,4 +366,4 @@ const getOrganizerStats = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { getEvents, getEventById, createEvent, updateEvent, deleteEvent, getMyEvents, registerEvent, generateEventQRCode, verifyQRCode, getPendingEvents, approveEvent, rejectEvent, getOrganizerStats };
+module.exports = { getEvents, getEventById, createEvent, updateEvent, deleteEvent, getMyEvents, getPendingEvents, approveEvent, rejectEvent, getOrganizerStats };

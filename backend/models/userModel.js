@@ -41,6 +41,9 @@ const userSchema = mongoose.Schema(
     societyName: {
       type: String,
     },
+    phoneNumber: {
+      type: String,
+    },
     registeredEvents: [
       {
         eventId: {

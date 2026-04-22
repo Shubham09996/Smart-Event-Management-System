@@ -39,6 +39,7 @@ app.use('/api/events', eventRoutes);
 app.use('/api/categories', categoryRoutes); // Use category routes
 app.use('/api/admin', adminRoutes); // Use admin routes
 app.use('/api/settings', systemSettingRoutes); // Use system setting routes
+app.use('/api/registrations', require('./routes/registrationRoutes')); // Use registration routes
 
 app.get('/', (req, res) => {
   res.send('API is running...');

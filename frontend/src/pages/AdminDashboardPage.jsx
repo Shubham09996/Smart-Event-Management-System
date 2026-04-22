@@ -252,6 +252,22 @@ const AdminDashboardPage = () => {
             transition={{ duration: 0.4 }}
             className="space-y-6"
           >
+            {/* Welcome Message for Dashboard only */}
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="flex items-center justify-between"
+            >
+              <div>
+                <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+                  System Overview
+                </h1>
+                <p className="text-slate-500 text-sm font-medium mt-1">
+                  Welcome back, {user?.name || "Admin"}. Here's what's happening.
+                </p>
+              </div>
+            </motion.div>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -377,18 +393,7 @@ const AdminDashboardPage = () => {
       {/* Main Section */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <Topbar setMobileSidebarOpen={setMobileSidebarOpen} />
-        <div className="pt-8 md:pt-10 px-6 space-y-6 overflow-y-auto">
-          {/* Welcome Message */}
-          <motion.h1
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-            className="text-4xl font-black text-slate-900 tracking-tight mb-2"
-          >
-            Hello, {user?.name || "Admin"}! 👋
-          </motion.h1>
-          <p className="text-slate-500 font-medium italic -mt-4 mb-6">Manage platform users, events and system configurations.</p>
-
+        <div className="pt-8 md:pt-10 px-6 space-y-6 overflow-y-auto pb-8">
           <AnimatePresence mode="wait">
             {isLoading ? (
               <div className="text-center text-xl text-white">Loading data...</div>

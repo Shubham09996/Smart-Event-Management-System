@@ -45,11 +45,11 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new Error('User already exists');
   }
 
-  // Logic to prevent direct admin signup
-  if (role === 'admin') {
-    res.status(400);
-    throw new Error('Direct admin registration is not allowed');
-  }
+  // Logic to prevent direct admin signup (TEMPORARILY DISABLED FOR POSTMAN CREATION)
+  // if (role === 'admin') {
+  //   res.status(400);
+  //   throw new Error('Direct admin registration is not allowed');
+  // }
 
   let uploadedImageUrl = profilePicture;
   if (profilePicture && profilePicture.startsWith('data:image')) {

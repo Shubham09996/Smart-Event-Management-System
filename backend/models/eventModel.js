@@ -40,10 +40,29 @@ const eventSchema = mongoose.Schema(
       required: true,
       default: false,
     },
-    // You can add more fields related to QR codes, images, etc. later if needed.
     eventImage: {
       type: String,
-      default: "https://via.placeholder.com/400x200?text=Event+Image", // Default image
+      default: "https://images.unsplash.com/photo-1540575861501-7ad05823c9fe?w=800&auto=format&fit=crop&q=60", // Upgraded default image
+    },
+    isPaid: {
+      type: Boolean,
+      default: false,
+    },
+    ticketPrice: {
+      type: Number,
+      default: 0,
+    },
+    capacity: {
+      type: Number,
+      default: 0, // 0 implies unlimited
+    },
+    mediaUrls: [{
+      type: String,
+    }],
+    socialLinks: {
+      website: String,
+      instagram: String,
+      twitter: String,
     },
   },
   {
