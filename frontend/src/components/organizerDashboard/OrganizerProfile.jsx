@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Pencil,
   Save,
@@ -9,9 +9,10 @@ import {
   Briefcase,
   Users,
   Mail,
-  X
+  X,
+  Building
 } from "lucide-react";
-import api from "../../utils/api"; // Import the API instance
+import api from "../../utils/api";
 import { useAuth } from "../../context/AuthContext";
 
 const OrganizerProfile = () => {
@@ -21,7 +22,7 @@ const OrganizerProfile = () => {
     name: "",
     email: "",
     role: "",
-    profilePicture: "https://i.pravatar.cc/150?img=68",
+    profilePicture: `https://ui-avatars.com/api/?name=User&background=4f46e5&color=fff`,
     gender: "",
     rollNo: "",
     department: "",
@@ -38,9 +39,6 @@ const OrganizerProfile = () => {
     setLoading(true);
     setError(null);
     try {
-      // const userInfo = JSON.parse(localStorage.getItem("userInfo")); // Removed
-      // const token = userInfo ? userInfo.token : null; // Removed
-
       if (!isAuthenticated || !user?.token) {
         throw new Error("User not authenticated or token missing");
       }
@@ -56,13 +54,12 @@ const OrganizerProfile = () => {
         name: data.name,
         email: data.email,
         role: data.role,
-        profilePicture: data.profilePicture || "https://i.pravatar.cc/150?img=68",
+        profilePicture: data.profilePicture || `https://ui-avatars.com/api/?name=${data.name || "User"}&background=4f46e5&color=fff`,
         gender: data.gender || "",
         rollNo: data.rollNo || "",
         department: data.department || "",
         societyName: data.societyName || "",
       });
-      // localStorage.setItem("userInfo", JSON.stringify(data)); // Moved to AuthContext
     } catch (err) {
       setError(err.response && err.response.data.message ? err.response.data.message : err.message);
     } finally {
@@ -93,7 +90,7 @@ const OrganizerProfile = () => {
   };
 
   const handleSave = async () => {
-    if (password !== confirmPassword) {
+    if (password && password !== confirmPassword) {
       setError("Passwords do not match");
       return;
     }
@@ -103,9 +100,6 @@ const OrganizerProfile = () => {
     setSuccess(false);
 
     try {
-      // const userInfo = JSON.parse(localStorage.getItem("userInfo")); // Removed
-      // const token = userInfo ? userInfo.token : null; // Removed
-
       if (!isAuthenticated || !user?.token) {
         throw new Error("User not authenticated or token missing");
       }
@@ -122,33 +116,31 @@ const OrganizerProfile = () => {
       if (password) {
         updatedData.password = password;
       }
-      let updatedProfilePicture = profile.profilePicture;
+      
       if (profilePictureFile) {
         const reader = new FileReader();
         reader.readAsDataURL(profilePictureFile);
         await new Promise((resolve) => {
           reader.onloadend = () => {
-            updatedProfilePicture = reader.result;
+            updatedData.profilePicture = reader.result;
             resolve();
           };
         });
       } else if (profile.profilePicture === "") {
-        updatedProfilePicture = "https://i.pravatar.cc/150?img=68";
+        updatedData.profilePicture = `https://ui-avatars.com/api/?name=${profile.name || "User"}&background=4f46e5&color=fff`;
       }
-      updatedData.profilePicture = updatedProfilePicture;
 
       const { data } = await api.put("/users/profile", updatedData, config);
 
-      // localStorage.setItem("userInfo", JSON.stringify(data)); // Moved to AuthContext
       setProfile({
         name: data.name,
         email: data.email,
         role: data.role,
-        profilePicture: data.profilePicture,
-        gender: data.gender,
-        rollNo: data.rollNo,
-        department: data.department,
-        societyName: data.societyName,
+        profilePicture: data.profilePicture || `https://ui-avatars.com/api/?name=${data.name || "User"}&background=4f46e5&color=fff`,
+        gender: data.gender || "",
+        rollNo: data.rollNo || "",
+        department: data.department || "",
+        societyName: data.societyName || "",
       });
       setPassword("");
       setConfirmPassword("");
@@ -162,202 +154,235 @@ const OrganizerProfile = () => {
     }
   };
 
+  if (authLoading) {
+    return <div className="flex min-h-screen bg-slate-50 items-center justify-center p-4">
+      <div className="animate-spin rounded-full h-12 w-12 border-4 border-indigo-600 border-t-transparent"></div>
+    </div>;
+  }
+
   return (
     <motion.div
-      className="bg-[#111827] rounded-2xl p-6 shadow-lg border border-gray-700"
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
+      transition={{ duration: 0.5 }}
+      className="bg-white p-8 rounded-[2.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 max-w-4xl mx-auto"
     >
-      {/* Top Section */}
-      <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 relative">
-        {/* Profile Picture */}
-        <motion.div whileHover={{ scale: 1.05 }} className="relative">
-          <img
-            src={profile.profilePicture}
-            alt="Profile"
-            className="w-32 h-32 rounded-full object-cover shadow-lg border-2 border-indigo-500"
-          />
-          {isEditing && (
-            <label
-              htmlFor="profilePictureInput"
-              className="absolute bottom-0 right-0 bg-indigo-600 p-2 rounded-full cursor-pointer shadow-md transform translate-x-1 translate-y-1"
-            >
-              <Camera className="w-4 h-4 text-white" />
-              <input
-                id="profilePictureInput"
-                type="file"
-                className="hidden"
-                accept="image/*"
-                onChange={handleFileChange}
-              />
-            </label>
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.1, duration: 0.5 }}
+        className="flex justify-between items-center mb-10 pb-6 border-b border-slate-50"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center">
+            <User size={20} />
+          </div>
+          <h3 className="text-2xl font-black text-slate-900 tracking-tight">Organizer Profile</h3>
+        </div>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className={`flex items-center gap-2 px-6 py-2.5 text-sm font-black uppercase tracking-wider rounded-xl transition-all shadow-md ${isEditing ? "bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-100" : "bg-slate-900 hover:bg-indigo-600 text-white shadow-slate-200"}`}
+          onClick={() => isEditing ? handleSave() : setIsEditing(true)}
+          disabled={loading}
+        >
+          {loading ? (
+            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          ) : isEditing ? (
+            <Save size={18} />
+          ) : (
+            <Pencil size={18} />
           )}
-        </motion.div>
+          {loading ? "Saving..." : isEditing ? "Save Profile" : "Edit Profile"}
+        </motion.button>
+      </motion.div>
+
+      <div className="flex flex-col lg:flex-row items-center lg:items-start gap-12">
+        {/* Profile Picture */}
+        <div className="flex flex-col items-center gap-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="relative w-40 h-40 rounded-[2.5rem] overflow-hidden border-4 border-white shadow-2xl flex-shrink-0 group"
+          >
+            <div className="absolute inset-0 bg-indigo-500 opacity-20 blur-xl rounded-full scale-110"></div>
+            <img
+              src={profile.profilePicture}
+              alt="Profile"
+              className="w-full h-full object-cover relative z-10"
+            />
+            {isEditing && (
+              <label htmlFor="profile-picture-upload" className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm z-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 cursor-pointer">
+                <Camera size={32} className="text-white" />
+              </label>
+            )}
+            <input
+              id="profile-picture-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+              disabled={!isEditing}
+            />
+          </motion.div>
+          <div className="px-4 py-1.5 rounded-full bg-slate-50 border border-slate-100 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{profile.role}</span>
+          </div>
+        </div>
 
         {/* Profile Info */}
-        <div className="flex-1 text-center sm:text-left mt-4 sm:mt-0">
+        <div className="flex-1 w-full">
           {isEditing ? (
-            <div className="space-y-3">
-              <input
-                type="text"
-                name="name"
-                value={profile.name}
-                onChange={handleChange}
-                className="bg-gray-800 p-2 rounded-lg w-full outline-none text-white"
-              />
-              <input
-                type="email"
-                name="email"
-                value={profile.email}
-                onChange={handleChange}
-                className="bg-gray-800 p-2 rounded-lg w-full outline-none text-white"
-                disabled // Email cannot be changed for now
-              />
-              <select
-                name="gender"
-                value={profile.gender}
-                onChange={handleChange}
-                className="bg-gray-800 p-2 rounded-lg w-full outline-none text-white"
-              >
-                <option value="">Select Gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-                <option value="Prefer not to say">Prefer not to say</option>
-              </select>
-              <input
-                type="text"
-                name="department"
-                placeholder="Department"
-                value={profile.department}
-                onChange={handleChange}
-                className="bg-gray-800 p-2 rounded-lg w-full outline-none text-white"
-              />
-              {profile.role === "organizer" && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.4 }}
+              className="grid sm:grid-cols-2 gap-5"
+            >
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Organizer Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={profile.name}
+                  onChange={handleChange}
+                  className="w-full px-5 py-3 rounded-2xl bg-slate-50 border border-slate-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 outline-none transition-all text-slate-900 font-bold"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Email Address</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={profile.email}
+                  disabled
+                  className="w-full px-5 py-3 rounded-2xl bg-slate-50 border border-slate-100 opacity-60 text-slate-500 font-bold outline-none cursor-not-allowed"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Gender</label>
+                <select
+                  name="gender"
+                  value={profile.gender}
+                  onChange={handleChange}
+                  className="w-full px-5 py-3 rounded-2xl bg-slate-50 border border-slate-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 outline-none transition-all text-slate-900 font-bold"
+                >
+                  <option value="">Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                  <option value="Prefer not to say">Prefer not to say</option>
+                </select>
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Society / Org Name</label>
                 <input
                   type="text"
                   name="societyName"
-                  placeholder="Society Name"
                   value={profile.societyName}
                   onChange={handleChange}
-                  className="bg-gray-800 p-2 rounded-lg w-full outline-none text-white"
+                  className="w-full px-5 py-3 rounded-2xl bg-slate-50 border border-slate-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 outline-none transition-all text-slate-900 font-bold"
                 />
-              )}
-              <input
-                type="password"
-                name="password"
-                placeholder="New Password (optional)"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="bg-gray-800 p-2 rounded-lg w-full outline-none text-white"
-              />
-              <input
-                type="password"
-                name="confirmPassword"
-                placeholder="Confirm New Password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="bg-gray-800 p-2 rounded-lg w-full outline-none text-white"
-              />
-            </div>
+              </div>
+              <div className="space-y-1.5 sm:col-span-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Department</label>
+                <input
+                  type="text"
+                  name="department"
+                  value={profile.department}
+                  onChange={handleChange}
+                  className="w-full px-5 py-3 rounded-2xl bg-slate-50 border border-slate-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 outline-none transition-all text-slate-900 font-bold"
+                />
+              </div>
+
+              <div className="sm:col-span-2 pt-4 border-t border-slate-50 mt-2">
+                <p className="text-[10px] font-black text-slate-900 uppercase tracking-[0.2em] mb-4">Security Settings</p>
+                <div className="grid sm:grid-cols-2 gap-5">
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">New Password</label>
+                    <input
+                      type="password"
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full px-5 py-3 rounded-2xl bg-slate-50 border border-slate-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 outline-none transition-all text-slate-900 font-bold"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Confirm Password</label>
+                    <input
+                      type="password"
+                      placeholder="••••••••"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="w-full px-5 py-3 rounded-2xl bg-slate-50 border border-slate-100 focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 outline-none transition-all text-slate-900 font-bold"
+                    />
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           ) : (
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="space-y-1"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.4 }}
+              className="space-y-8"
             >
-              <h2 className="text-3xl font-bold text-white">{profile.name}</h2>
-              <p className="text-indigo-300 text-lg flex items-center gap-2">
-                <Mail size={18} /> {profile.email}
-              </p>
-              {profile.gender && (
-                <p className="text-gray-400 flex items-center gap-2">
-                  <User size={18} /> {profile.gender}
-                </p>
-              )}
-              {profile.department && (
-                <p className="text-gray-400 flex items-center gap-2">
-                  <Briefcase size={18} /> {profile.department}
-                </p>
-              )}
-              {profile.societyName && (
-                <p className="text-gray-400 flex items-center gap-2">
-                  <Users size={18} /> {profile.societyName}
-                </p>
-              )}
-              <span className="text-sm text-blue-400 bg-blue-900 px-3 py-1 rounded-full mt-2 inline-block">
-                {profile.role}
-              </span>
+              <div>
+                <h4 className="text-slate-900 text-3xl font-black tracking-tight mb-2 uppercase">{profile.name}</h4>
+                <div className="flex items-center gap-2 text-indigo-600 font-bold text-sm bg-indigo-50 px-3 py-1 rounded-full w-fit">
+                  <Mail size={14} /> {profile.email}
+                </div>
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-8 pt-8 border-t border-slate-50">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-slate-50 text-slate-400 rounded-2xl flex items-center justify-center flex-shrink-0 hover:bg-slate-100 hover:text-indigo-600 transition-all">
+                    <Building size={24} />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Society / Org</label>
+                    <p className="text-slate-900 font-black text-lg">{profile.societyName || "Not specified"}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-slate-50 text-slate-400 rounded-2xl flex items-center justify-center flex-shrink-0 hover:bg-slate-100 hover:text-indigo-600 transition-all">
+                    <Briefcase size={24} />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Department</label>
+                    <p className="text-slate-900 font-black text-lg">{profile.department || "Not specified"}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-slate-50 text-slate-400 rounded-2xl flex items-center justify-center flex-shrink-0 hover:bg-slate-100 hover:text-indigo-600 transition-all">
+                    <User size={24} />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Gender</label>
+                    <p className="text-slate-900 font-black text-lg">{profile.gender || "Not specified"}</p>
+                  </div>
+                </div>
+              </div>
             </motion.div>
           )}
-          {error && <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-red-500 text-sm mt-2"
-          >Error: {error}</motion.p>}
-          {success && <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-green-500 text-sm mt-2"
-          >Profile updated successfully!</motion.p>}
-        </div>
 
-        {/* Edit / Save / Cancel */}
-        <div className="absolute top-2 right-2 flex gap-2">
-          {!isEditing ? (
-            <motion.button
-              whileTap={{ scale: 0.9 }}
-              onClick={() => setIsEditing(true)}
-              className="bg-indigo-600 hover:bg-indigo-700 px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 text-white"
-            >
-              <Pencil size={16} /> Edit
-            </motion.button>
-          ) : (
-            <>
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                onClick={handleSave}
-                disabled={loading}
-                className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 text-white disabled:opacity-50"
+          <AnimatePresence>
+            {(error || success) && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className={`mt-8 p-4 rounded-2xl flex items-center justify-center text-sm font-black uppercase tracking-wider ${error ? "bg-red-50 text-red-600 border border-red-100" : "bg-emerald-50 text-emerald-600 border border-emerald-100"}`}
               >
-                {loading ? "Saving..." : <Save size={16} />} {loading ? "Saving..." : "Save"}
-              </motion.button>
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                onClick={() => {
-                  setIsEditing(false);
-                  fetchUserProfile(); // Revert changes by refetching profile
-                  setPassword("");
-                  setConfirmPassword("");
-                  setError(null);
-                  setSuccess(false);
-                }}
-                className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg shadow-lg flex items-center gap-2 text-white"
-              >
-                <X size={16} /> Cancel
-              </motion.button>
-            </>
-          )}
+                {error ? `Action Failed: ${error}` : "Profile Updated Successfully!"}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
-
-      {/* Divider */}
-      <div className="my-6 border-t border-gray-700"></div>
-
-      {/* Bio / About Section (Optional) */}
-      {/* Agar aapko yaha koi 'bio' ya 'about' section chahiye, toh add kar sakte hain. */}
-      {/* Example: */}
-      {/* <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
-        className="mt-6 bg-gray-800 rounded-xl p-4 text-gray-300 text-sm"
-      >
-        <h3 className="text-lg font-semibold text-white mb-2">About Me</h3>
-        <p>This is where the organizer can write a short bio about themselves or their organization.</p>
-      </motion.div> */}
     </motion.div>
   );
 };

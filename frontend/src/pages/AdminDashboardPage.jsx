@@ -369,7 +369,7 @@ const AdminDashboardPage = () => {
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.6 }}
-      className="flex min-h-screen bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a]"
+      className="flex min-h-screen bg-slate-50"
     >
       {/* Sidebar */}
       <Sidebar active={activePage} setActivePage={setActivePage} mobileSidebarOpen={mobileSidebarOpen} setMobileSidebarOpen={setMobileSidebarOpen} isDesktop={isDesktop} />
@@ -377,16 +377,18 @@ const AdminDashboardPage = () => {
       {/* Main Section */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <Topbar setMobileSidebarOpen={setMobileSidebarOpen} />
-        <div className="p-6 space-y-6 overflow-y-auto">
+        <div className="pt-8 md:pt-10 px-6 space-y-6 overflow-y-auto">
           {/* Welcome Message */}
           <motion.h1
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
-            className="text-4xl font-extrabold text-white mb-6"
+            className="text-4xl font-black text-slate-900 tracking-tight mb-2"
           >
-            Hello, {user?.name || "Admin"}!
+            Hello, {user?.name || "Admin"}! 👋
           </motion.h1>
+          <p className="text-slate-500 font-medium italic -mt-4 mb-6">Manage platform users, events and system configurations.</p>
+
           <AnimatePresence mode="wait">
             {isLoading ? (
               <div className="text-center text-xl text-white">Loading data...</div>

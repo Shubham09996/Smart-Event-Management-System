@@ -1,90 +1,52 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Edit, Trash2, X } from "lucide-react";
-import api from "../../utils/api"; // Import the API instance
+import { Edit, Trash2, X, User as UserIcon, Mail, Shield, UserCheck, AlertCircle } from "lucide-react";
+import api from "../../utils/api";
 
 const ManageUsers = ({ users, onUserUpdated, onUserDeleted, currentAdminId }) => {
   const [deleteId, setDeleteId] = useState(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
-  const [loadingDelete, setLoadingDelete] = useState(false);
-  const [errorDelete, setErrorDelete] = useState(null);
-  const [loadingUpdate, setLoadingUpdate] = useState(false);
-  const [errorUpdate, setErrorUpdate] = useState(null);
-  const [successUpdate, setSuccessUpdate] = useState(false);
+  const [loadingAction, setLoadingAction] = useState(false);
+  const [error, setError] = useState(null);
 
-  // Role badge colors
-  const roleColors = {
-    admin: "bg-red-500/20 text-red-400",
-    organizer: "bg-blue-500/20 text-blue-400",
-    student: "bg-green-500/20 text-green-400",
+  const roleConfigs = {
+    admin: { color: "text-red-600", bg: "bg-red-50", icon: Shield },
+    organizer: { color: "text-indigo-600", bg: "bg-indigo-50", icon: UserCheck },
+    student: { color: "text-emerald-600", bg: "bg-emerald-50", icon: UserIcon },
+  };
+
+  const getAuthHeader = () => {
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    return { headers: { Authorization: `Bearer ${userInfo?.token}` } };
   };
 
   const handleDelete = async (id) => {
-    setLoadingDelete(true);
-    setErrorDelete(null);
+    setLoadingAction(true);
+    setError(null);
     try {
-      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      const token = userInfo ? userInfo.token : null;
-
-      if (!token) {
-        throw new Error("User not authenticated");
-      }
-
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      await api.delete(`/users/${id}`, config);
-      if (onUserDeleted) {
-        onUserDeleted();
-      }
+      await api.delete(`/users/${id}`, getAuthHeader());
+      if (onUserDeleted) onUserDeleted();
       setDeleteId(null);
     } catch (err) {
-      setErrorDelete(err.response && err.response.data.message ? err.response.data.message : err.message);
+      setError(err.response?.data?.message || err.message);
     } finally {
-      setLoadingDelete(false);
+      setLoadingAction(false);
     }
-  };
-
-  const handleEditClick = (user) => {
-    setEditingUser(user);
-    setEditModalOpen(true);
   };
 
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
-    setLoadingUpdate(true);
-    setErrorUpdate(null);
-    setSuccessUpdate(false);
-
+    setLoadingAction(true);
+    setError(null);
     try {
-      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      const token = userInfo ? userInfo.token : null;
-
-      if (!token) {
-        throw new Error("User not authenticated");
-      }
-
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      };
-
-      await api.put(`/users/${editingUser._id}`, editingUser, config);
-      setSuccessUpdate(true);
+      await api.put(`/users/${editingUser._id}`, editingUser, getAuthHeader());
       setEditModalOpen(false);
-      if (onUserUpdated) {
-        onUserUpdated();
-      }
+      if (onUserUpdated) onUserUpdated();
     } catch (err) {
-      setErrorUpdate(err.response && err.response.data.message ? err.response.data.message : err.message);
+      setError(err.response?.data?.message || err.message);
     } finally {
-      setLoadingUpdate(false);
+      setLoadingAction(false);
     }
   };
 
@@ -92,218 +54,212 @@ const ManageUsers = ({ users, onUserUpdated, onUserDeleted, currentAdminId }) =>
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: 0.1 }}
-      className="bg-[#1e293b] p-6 rounded-xl shadow-lg"
+      transition={{ duration: 0.5, delay: 0.2 }}
+      className="bg-white p-8 rounded-[2.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100"
     >
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.3 }}
-        className="flex justify-between items-center mb-6"
-      >
-        <h3 className="text-lg font-semibold text-white">Manage Users</h3>
-        {/* Search input removed for now */}
-      </motion.div>
-
-      {/* Table */}
-      <div className="overflow-x-auto">
-        {users.length === 0 ? (
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="text-gray-400"
-          >
-            No users found.
-          </motion.p>
-        ) : (
-          <table className="w-full text-left text-gray-300 border-collapse">
-            <thead>
-              <motion.tr
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 }}
-                className="text-gray-400 border-b border-gray-700"
-              >
-                <th className="py-3 px-4">Name</th>
-                <th className="py-3 px-4">Email</th>
-                <th className="py-3 px-4">Role</th>
-                <th className="py-3 px-4 text-center">Actions</th>
-              </motion.tr>
-            </thead>
-            <tbody>
-              {users
-                .filter(user => user._id !== currentAdminId) // Filter out the current admin
-                .map((u, index) => (
-                <motion.tr
-                  key={u._id} // Use u._id from backend
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.9 + index * 0.05 }}
-                  className="border-b border-gray-700 hover:bg-white/5 transition"
-                >
-                  <td className="py-3 px-4 font-medium">{u.name}</td>
-                  <td className="py-3 px-4">{u.email}</td>
-                  <td className="py-3 px-4">
-                    <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${roleColors[u.role]}`}
-                    >
-                      {u.role}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4 text-center flex justify-center gap-3">
-                    <motion.button
-                      whileTap={{ scale: 0.95 }}
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                      className="p-2 rounded-lg bg-purple-600 hover:bg-purple-500 transition" onClick={() => handleEditClick(u)}>
-                      <Edit size={18} />
-                    </motion.button>
-                    <motion.button
-                      whileTap={{ scale: 0.95 }}
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                      className="p-2 rounded-lg bg-red-600 hover:bg-red-500 transition" onClick={() => setDeleteId(u._id)}>
-                      <Trash2 size={18} />
-                    </motion.button>
-                  </td>
-                </motion.tr>
-              ))}
-            </tbody>
-          </table>
-        )}
+      <div className="flex items-center justify-between mb-10">
+        <div>
+          <h3 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+            User Management
+            <span className="bg-slate-100 text-slate-500 text-xs px-3 py-1 rounded-full font-black uppercase tracking-widest">
+              {users.length - 1} Registered
+            </span>
+          </h3>
+          <p className="text-slate-500 font-medium italic">Control access levels and manage platform accounts</p>
+        </div>
+        <div className="p-3 bg-slate-50 text-slate-900 rounded-2xl">
+          <UserIcon size={20} />
+        </div>
       </div>
 
-      {/* Delete Confirmation Modal */}
+      <div className="overflow-x-auto -mx-2">
+        <table className="w-full text-left">
+          <thead>
+            <tr className="text-slate-400 border-b border-slate-50">
+              <th className="py-4 px-4 font-black uppercase text-[10px] tracking-[0.2em]">User Profile</th>
+              <th className="py-4 px-4 font-black uppercase text-[10px] tracking-[0.2em]">Contact</th>
+              <th className="py-4 px-4 font-black uppercase text-[10px] tracking-[0.2em]">Account Type</th>
+              <th className="py-4 px-4 font-black uppercase text-[10px] tracking-[0.2em] text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-50">
+            {users
+              .filter(user => user._id !== currentAdminId)
+              .map((u, index) => {
+                const config = roleConfigs[u.role] || roleConfigs.student;
+                return (
+                  <motion.tr
+                    key={u._id}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    className="group hover:bg-slate-50/50 transition-all duration-300"
+                  >
+                    <td className="py-5 px-4">
+                      <div className="flex items-center gap-4">
+                        <img 
+                          src={u.profilePicture || `https://ui-avatars.com/api/?name=${u.name}&background=f1f5f9&color=64748b`} 
+                          alt={u.name}
+                          className="w-11 h-11 rounded-2xl object-cover border-2 border-white shadow-sm"
+                        />
+                        <p className="text-slate-900 font-black tracking-tight">{u.name}</p>
+                      </div>
+                    </td>
+                    <td className="py-5 px-4">
+                      <div className="flex items-center gap-2 text-slate-500 text-sm font-medium">
+                        <Mail size={14} className="text-slate-300" />
+                        {u.email}
+                      </div>
+                    </td>
+                    <td className="py-5 px-4">
+                      <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-xl font-black text-[10px] uppercase tracking-widest ${config.bg} ${config.color}`}>
+                        <config.icon size={12} />
+                        {u.role}
+                      </div>
+                    </td>
+                    <td className="py-5 px-4">
+                      <div className="flex justify-end gap-3 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <motion.button
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          onClick={() => { setEditingUser(u); setEditModalOpen(true); }}
+                          className="p-2.5 rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-indigo-600 hover:border-indigo-100 hover:shadow-lg transition-all"
+                        >
+                          <Edit size={18} />
+                        </motion.button>
+                        <motion.button
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                          onClick={() => setDeleteId(u._id)}
+                          className="p-2.5 rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-red-500 hover:border-red-100 hover:shadow-lg transition-all"
+                        >
+                          <Trash2 size={18} />
+                        </motion.button>
+                      </div>
+                    </td>
+                  </motion.tr>
+                );
+              })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Delete Modal */}
       <AnimatePresence>
         {deleteId && (
-          <motion.div
-            className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="bg-[#1e293b] p-6 rounded-xl w-80 text-center"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setDeleteId(null)}
+              className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="relative bg-white p-8 rounded-[2.5rem] w-full max-w-sm shadow-[0_20px_100px_rgb(0,0,0,0.2)] text-center"
             >
-              <h3 className="text-white font-semibold mb-2">
-                Delete this user?
-              </h3>
-              <p className="text-gray-400 text-sm mb-4">
-                This action cannot be undone.
+              <div className="w-20 h-20 bg-red-50 text-red-500 rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-inner">
+                <AlertCircle size={32} />
+              </div>
+              <h3 className="text-xl font-black text-slate-900 mb-2">Delete Account?</h3>
+              <p className="text-slate-500 font-medium mb-8 leading-relaxed italic">
+                This action is permanent and will remove all user data from the platform.
               </p>
-              {errorDelete && <p className="text-red-500 text-sm mb-2">Error: {errorDelete}</p>}
-              <div className="flex justify-center gap-3">
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              <div className="flex gap-3">
+                <button 
                   onClick={() => setDeleteId(null)}
-                  className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-500 text-white"
+                  className="flex-1 py-4 bg-slate-100 text-slate-600 font-black rounded-2xl hover:bg-slate-200 transition-colors"
                 >
                   Cancel
-                </motion.button>
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                </button>
+                <button 
                   onClick={() => handleDelete(deleteId)}
-                  disabled={loadingDelete}
-                  className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white disabled:opacity-50"
+                  disabled={loadingAction}
+                  className="flex-1 py-4 bg-red-500 text-white font-black rounded-2xl shadow-lg shadow-red-500/20 hover:bg-red-600 transition-colors disabled:opacity-50"
                 >
-                  {loadingDelete ? "Deleting..." : "Delete"}
-                </motion.button>
+                  {loadingAction ? "Deleting..." : "Delete User"}
+                </button>
               </div>
             </motion.div>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
 
-      {/* Edit User Modal */}
+      {/* Edit Modal */}
       <AnimatePresence>
         {editModalOpen && editingUser && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/75 z-40 flex items-center justify-center"
-            onClick={() => setEditModalOpen(false)}
-          >
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
             <motion.div
-              initial={{ opacity: 0, y: 80, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 80, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-              className="relative w-full max-w-lg rounded-2xl shadow-2xl p-6 bg-[#1e293b] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setEditModalOpen(false)}
+              className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 50 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 50 }}
+              className="relative bg-white p-10 rounded-[3rem] w-full max-w-md shadow-[0_20px_100px_rgb(0,0,0,0.2)]"
             >
-              <button
+              <button 
                 onClick={() => setEditModalOpen(false)}
-                className="absolute top-3 right-3 text-gray-400 hover:text-white"
+                className="absolute top-8 right-8 text-slate-400 hover:text-slate-900 p-2"
               >
-                <X size={20} />
+                <X size={24} />
               </button>
-              <motion.h2
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.1 }}
-                className="text-xl font-semibold text-white mb-4"
-              >
-                Edit User
-              </motion.h2>
-              <form onSubmit={handleUpdateSubmit} className="space-y-4">
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="User Name"
-                  value={editingUser.name}
-                  onChange={(e) => setEditingUser({ ...editingUser, name: e.target.value })}
-                  required
-                  className="w-full p-3 rounded-lg bg-gray-800 text-white outline-none border border-gray-700 focus:border-purple-500"
-                />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="User Email"
-                  value={editingUser.email}
-                  onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
-                  required
-                  className="w-full p-3 rounded-lg bg-gray-800 text-white outline-none border border-gray-700 focus:border-purple-500"
-                />
-                <select
-                  name="role"
-                  value={editingUser.role}
-                  onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value })}
-                  required
-                  className="w-full p-3 rounded-lg bg-gray-800 text-white outline-none border border-gray-700 focus:border-purple-500"
-                >
-                  <option value="">Select Role</option>
-                  <option value="admin">Admin</option>
-                  <option value="organizer">Organizer</option>
-                  <option value="student">Student</option>
-                </select>
+              
+              <div className="mb-10 text-center">
+                <div className="w-24 h-24 bg-indigo-50 text-indigo-600 rounded-[2.5rem] flex items-center justify-center mx-auto mb-6 shadow-inner">
+                  <Edit size={32} />
+                </div>
+                <h2 className="text-3xl font-black text-slate-900 tracking-tight">Edit Permissions</h2>
+                <p className="text-slate-500 font-medium italic">Modify account details and access level</p>
+              </div>
 
-                {errorUpdate && <p className="text-red-500 text-sm">Error: {errorUpdate}</p>}
-                {successUpdate && <p className="text-green-500 text-sm">User updated successfully!</p>}
+              <form onSubmit={handleUpdateSubmit} className="space-y-6">
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4 mb-2">Display Name</label>
+                  <input
+                    type="text"
+                    value={editingUser.name}
+                    onChange={(e) => setEditingUser({ ...editingUser, name: e.target.value })}
+                    className="w-full px-6 py-4 rounded-[1.5rem] bg-slate-50 border border-transparent focus:bg-white focus:border-indigo-100 focus:ring-4 focus:ring-indigo-50 outline-none transition-all font-bold text-slate-900 text-lg shadow-inner"
+                    placeholder="User Name"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4 mb-2">Email Address</label>
+                  <input
+                    type="email"
+                    value={editingUser.email}
+                    onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
+                    className="w-full px-6 py-4 rounded-[1.5rem] bg-slate-50 border border-transparent focus:bg-white focus:border-indigo-100 focus:ring-4 focus:ring-indigo-50 outline-none transition-all font-bold text-slate-900 text-lg shadow-inner"
+                    placeholder="Email Address"
+                  />
+                </div>
 
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                  type="submit"
-                  disabled={loadingUpdate}
-                  className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-medium shadow-md disabled:opacity-50"
-                >
-                  {loadingUpdate ? "Updating..." : "Update User"}
-                </motion.button>
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4 mb-2">Access Role</label>
+                  <select
+                    value={editingUser.role}
+                    onChange={(e) => setEditingUser({ ...editingUser, role: e.target.value })}
+                    className="w-full px-6 py-4 rounded-[1.5rem] bg-slate-50 border border-transparent focus:bg-white focus:border-indigo-100 focus:ring-4 focus:ring-indigo-50 outline-none transition-all font-black text-slate-900 appearance-none shadow-inner"
+                  >
+                    <option value="admin">System Admin</option>
+                    <option value="organizer">Event Organizer</option>
+                    <option value="student">Student User</option>
+                  </select>
+                </div>
+
+                <div className="pt-4">
+                  <button
+                    type="submit"
+                    disabled={loadingAction}
+                    className="w-full py-5 bg-indigo-600 text-white font-black rounded-[1.5rem] shadow-[0_10px_30px_rgb(79,70,229,0.3)] hover:bg-indigo-700 hover:shadow-indigo-600/40 transition-all text-lg uppercase tracking-widest disabled:opacity-50"
+                  >
+                    {loadingAction ? "Safeguarding..." : "Update Permissions"}
+                  </button>
+                </div>
               </form>
             </motion.div>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </motion.div>

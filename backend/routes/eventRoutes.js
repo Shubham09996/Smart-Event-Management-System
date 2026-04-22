@@ -6,6 +6,7 @@ const router = express.Router();
 
 router.route('/').get(getEvents).post(protect, organizer, createEvent);
 router.get('/myevents', protect, organizer, getMyEvents);
+router.get('/organizer-stats', protect, organizer, getOrganizerStats);
 router.get('/pending', protect, admin, getPendingEvents); // New route for pending events
 router.route('/:id/qrcode').get(protect, generateEventQRCode);
 router.route('/verifyqr').post(protect, organizer, verifyQRCode);

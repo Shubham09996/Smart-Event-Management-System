@@ -75,6 +75,13 @@ export default function Navbar() {
     { icon: Settings, label: "Settings", page: "settings" },
   ];
 
+  // Do not show the public navbar on dashboard pages
+  if (location.pathname.startsWith("/student") || 
+      location.pathname.startsWith("/organizer") || 
+      location.pathname.startsWith("/admin")) {
+    return null;
+  }
+
   return (
     <motion.nav
       initial={{ y: -50, opacity: 0 }}
@@ -153,7 +160,7 @@ export default function Navbar() {
             <motion.img
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              src={user?.profilePicture || "https://i.pravatar.cc/150?img=68"}
+src={user?.profilePicture || `https://ui-avatars.com/api/?name=${user?.name || "User"}&background=4f46e5&color=fff`}
               alt="Profile"
               className="w-10 h-10 rounded-full cursor-pointer border-2 border-indigo-500 object-cover"
               onClick={handleProfileClick}

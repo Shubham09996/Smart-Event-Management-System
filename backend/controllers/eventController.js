@@ -321,4 +321,49 @@ const rejectEvent = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { getEvents, getEventById, createEvent, updateEvent, deleteEvent, getMyEvents, registerEvent, generateEventQRCode, verifyQRCode, getPendingEvents, approveEvent, rejectEvent };
+// @desc    Get Organizer Dashboard Stats
+// @route   GET /api/events/organizer-stats
+// @access  Private/Organizer
+const getOrganizerStats = asyncHandler(async (req, res) => {
+  const organizerId = req.user._id;
+
+  // 1. Total Events created by this organizer
+  const totalEvents = await Event.countDocuments({ organizer: organizerId });
+
+  // 2. Total Registrations across all events of this organizer
+  // First, get all event IDs for this organizer
+  const organizerEvents = await Event.find({ organizer: organizerId }).select('_id');
+  const eventIds = organizerEvents.map(event => event._id);
+
+  // Count registrations in User model
+  const registrationData = await User.aggregate([
+    { $unwind: "$registeredEvents" },
+    { $match: { "registeredEvents.eventId": { $in: eventIds } } },
+    { $count: "total" }
+  ]);
+  const totalRegistrations = registrationData.length > 0 ? registrationData[0].total : 0;
+
+  // 3. Active Events (Date >= today)
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const activeEvents = await Event.countDocuments({ 
+    organizer: organizerId,
+    date: { $gte: today }
+  });
+
+  // 4. Approval Rate
+  const approvedEvents = await Event.countDocuments({ 
+    organizer: organizerId, 
+    isApproved: true 
+  });
+  const approvalRate = totalEvents > 0 ? Math.round((approvedEvents / totalEvents) * 100) : 0;
+
+  res.json({
+    totalEvents,
+    totalRegistrations,
+    activeEvents,
+    approvalRate: `${approvalRate}%`
+  });
+});
+
+module.exports = { getEvents, getEventById, createEvent, updateEvent, deleteEvent, getMyEvents, registerEvent, generateEventQRCode, verifyQRCode, getPendingEvents, approveEvent, rejectEvent, getOrganizerStats };

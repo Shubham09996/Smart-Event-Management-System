@@ -1,58 +1,85 @@
 import { motion } from "framer-motion";
-import { BarChart3, Users, ClipboardList, Activity, CheckCircle } from "lucide-react";
+import { BarChart3, Users, ClipboardList, Activity, CheckCircle, TrendingUp } from "lucide-react";
 
 const StatsCards = ({ stats }) => {
-  const displayStats = stats ? [
-    { label: "Total Users", value: stats.totalUsers, icon: <Users size={28} />, color: "purple" },
-    { label: "Total Events", value: stats.totalEvents, icon: <BarChart3 size={28} />, color: "blue" },
-    { label: "Approved Events", value: stats.approvedEvents, icon: <CheckCircle size={28} />, color: "green" },
-    { label: "Pending Events", value: stats.pendingEvents, icon: <ClipboardList size={28} />, color: "yellow" },
+  const statsConfig = stats ? [
+    { 
+      title: "Total Users", 
+      value: stats.totalUsers || "0", 
+      icon: Users, 
+      color: "text-indigo-600",
+      bg: "bg-indigo-50",
+      trend: "Platform reach"
+    },
+    { 
+      title: "Total Events", 
+      value: stats.totalEvents || "0", 
+      icon: BarChart3, 
+      color: "text-emerald-600",
+      bg: "bg-emerald-50",
+      trend: "Event richness"
+    },
+    { 
+      title: "Approved Events", 
+      value: stats.approvedEvents || "0", 
+      icon: CheckCircle, 
+      color: "text-purple-600",
+      bg: "bg-purple-50",
+      trend: "Live on platform"
+    },
+    { 
+      title: "Pending Approvals", 
+      value: stats.pendingEvents || "0", 
+      icon: ClipboardList, 
+      color: "text-amber-600",
+      bg: "bg-amber-50",
+      trend: "Needs attention"
+    },
   ] : [];
 
-  // Using CheckCircle from lucide-react, so import it
-  // We also removed `isPositive` and `change` as those are not in our current backend stats
+  if (!stats) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="h-40 bg-white rounded-[2rem] border border-slate-100 animate-pulse flex items-center justify-center">
+            <div className="text-slate-200 font-bold">Loading Stats...</div>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.2 }}
-      className="grid grid-cols-1 md:grid-cols-4 gap-6"
-    >
-      {stats ? (
-        displayStats.map((s, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              type: "spring",
-              stiffness: 400,
-              damping: 10,
-              duration: 0.4,
-              delay: i * 0.1
-            }}
-            whileHover={{ scale: 1.05 }}
-            className="relative bg-[#1e293b]/80 backdrop-blur-lg border border-gray-700 p-6 rounded-2xl shadow-lg text-center hover:shadow-purple-500/20 transition"
-          >
-            {/* Icon */}
-            <div className="flex justify-center mb-3">
-              <div className={`p-3 rounded-full bg-${s.color}-500/20 text-${s.color}-400`}>
-                {s.icon}
-              </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      {statsConfig.map((stat, i) => (
+        <motion.div
+          key={i}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 * i }}
+          whileHover={{ y: -5 }}
+          className="bg-white p-6 rounded-[2rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 group relative overflow-hidden"
+        >
+          {/* Decorative background element */}
+          <div className="absolute top-0 right-0 w-24 h-24 bg-slate-50 rounded-full blur-3xl -mr-12 -mt-12 transition-transform group-hover:scale-110 duration-700"></div>
+          
+          <div className="relative z-10 flex items-start justify-between mb-4">
+            <div className={`p-4 ${stat.bg} ${stat.color} rounded-2xl shadow-sm group-hover:scale-110 transition-transform duration-500`}>
+              <stat.icon size={24} />
             </div>
-
-            {/* Value */}
-            <h3 className="text-3xl font-bold text-white">{s.value}</h3>
-            <p className="text-gray-400 text-sm">{s.label}</p>
-
-            {/* Change Badge - Removed as per current backend data */}
-          </motion.div>
-        ))
-      ) : (
-        <div className="col-span-4 text-center text-xl text-gray-400">Loading stats...</div>
-      )}
-    </motion.div>
+            <div className="flex items-center gap-1 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+              <TrendingUp size={12} className="text-emerald-500" />
+              {stat.trend}
+            </div>
+          </div>
+          
+          <div className="relative z-10">
+            <h3 className="text-slate-500 font-bold text-sm uppercase tracking-wider mb-1">{stat.title}</h3>
+            <p className="text-3xl font-black text-slate-900 tracking-tight">{stat.value}</p>
+          </div>
+        </motion.div>
+      ))}
+    </div>
   );
 };
 

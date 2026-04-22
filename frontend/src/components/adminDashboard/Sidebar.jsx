@@ -16,102 +16,91 @@ const Sidebar = ({ active, setActivePage, mobileSidebarOpen, setMobileSidebarOpe
   const navigate = useNavigate(); // Initialize useNavigate
   const NavItem = ({ icon: Icon, label, page }) => (
     <motion.div
-      whileHover={{ scale: 1.05, x: 5 }}
-      whileTap={{ scale: 0.95 }}
+      whileHover={{ scale: 1.02, x: 5 }}
+      whileTap={{ scale: 0.98 }}
       onClick={() => {
         navigate(`?page=${page}`);
         setMobileSidebarOpen(false); // Close sidebar on navigation
       }}
-      className={`flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-colors duration-200 ${
+      className={`flex items-center gap-3 px-5 py-3.5 rounded-2xl cursor-pointer transition-all duration-300 group ${
         active === page
-          ? "bg-indigo-600/20 text-indigo-300"
-          : "text-slate-300 hover:bg-white/5 hover:text-white"
+          ? "bg-indigo-600 text-white shadow-lg shadow-indigo-600/20"
+          : "text-slate-500 hover:bg-slate-50 hover:text-indigo-600 border border-transparent hover:border-slate-100"
       }`}
     >
-      <Icon size={20} />
-      <span className="font-medium">{label}</span>
+      <Icon size={20} className={active === page ? "text-white" : "text-slate-400 group-hover:text-indigo-600 transition-colors"} />
+      <span className="font-bold tracking-tight">{label}</span>
     </motion.div>
   );
 
   return (
     <>
       {/* Overlay for mobile sidebar */}
-      {mobileSidebarOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          onClick={() => setMobileSidebarOpen(false)}
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
-        />
-      )}
+      <AnimatePresence>
+        {mobileSidebarOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setMobileSidebarOpen(false)}
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 md:hidden"
+          />
+        )}
+      </AnimatePresence>
 
       <motion.aside
         initial={{ x: -300 }}
         animate={{ x: isDesktop || mobileSidebarOpen ? 0 : -300 }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
-        className={`hidden md:flex flex-col w-72 bg-[#0b1220] border-r border-white/5 p-4 gap-3 ${mobileSidebarOpen ? "fixed inset-y-0 left-0 z-40 flex" : ""}`}
+        transition={{ type: "spring", damping: 25, stiffness: 200 }}
+        className={`fixed md:sticky top-0 h-screen w-72 bg-white/80 backdrop-blur-xl border-r border-slate-200 p-6 flex flex-col z-[60] ${mobileSidebarOpen ? "left-0" : ""}`}
       >
         {/* Close button for mobile sidebar */}
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.95 }}
+        <button
           onClick={() => setMobileSidebarOpen(false)}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white focus:outline-none md:hidden"
+          className="absolute top-6 right-6 text-slate-400 hover:text-slate-900 md:hidden"
         >
           <X size={24} />
-        </motion.button>
+        </button>
 
         {/* Logo Section */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="flex items-center gap-3 px-2 py-3"
+          className="flex items-center gap-3 px-2 mb-10"
         >
-          <div className="h-9 w-9 rounded-xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-600/25">
-            <Home size={18} />
+          <div className="h-12 w-12 rounded-[1.25rem] bg-indigo-600 flex items-center justify-center shadow-xl shadow-indigo-600/30">
+            <ShieldCheck size={24} className="text-white" />
           </div>
           <div>
-            <p className="text-white font-semibold leading-tight">SmartEvents</p>
-            <p className="text-[11px] text-slate-400 -mt-0.5">Campus Edition</p>
+            <p className="text-slate-900 font-black text-xl leading-tight tracking-tighter">Admin<span className="text-indigo-600 text-sm align-top leading-none ml-0.5">•</span></p>
+            <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] -mt-1">Control Center</p>
           </div>
         </motion.div>
 
         {/* Navigation */}
-        <nav className="mt-2 flex flex-col gap-2">
+        <nav className="flex flex-col gap-2.5">
           <NavItem icon={Home} label="Dashboard" page="dashboard" />
-          <NavItem icon={Layers} label="Events" page="events" />
-          <NavItem icon={User2} label="Users" page="users" />
-          <NavItem icon={Tags} label="Categories" page="categories" /> {/* Changed from Category to Tags NavItem */}
+          <NavItem icon={Layers} label="Pending Events" page="events" />
+          <NavItem icon={User2} label="Manage Users" page="users" />
+          <NavItem icon={Tags} label="Event Categories" page="categories" />
           <NavItem icon={BarChart3} label="Analytics" page="analytics" />
-          <NavItem icon={Settings} label="Settings" page="settings" />
+          <NavItem icon={Settings} label="System Settings" page="settings" />
         </nav>
 
         {/* Bottom Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.3 }}
-          className="mt-auto"
-        >
-          {/* Promo Box */}
-          <div className="bg-gradient-to-br from-white/5 to-transparent rounded-2xl p-4 border border-white/5">
-            <p className="text-sm text-slate-300">
-              Stay updated with campus events and workshops.
+        <div className="mt-auto pt-10">
+          <div className="relative overflow-hidden bg-slate-900 rounded-[2rem] p-6 group">
+            <div className="absolute top-0 right-0 w-20 h-20 bg-indigo-600/20 rounded-full blur-2xl -mr-10 -mt-10 transition-transform group-hover:scale-150 duration-700"></div>
+            <p className="relative z-10 text-xs font-black text-indigo-400 uppercase tracking-widest mb-2">System Status</p>
+            <p className="relative z-10 text-sm text-slate-300 font-bold leading-relaxed mb-4">
+              All systems online. Security protocols active.
             </p>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              className="mt-3 w-full flex items-center justify-center gap-2 text-sm bg-white/10 hover:bg-white/15 text-white py-2 rounded-xl transition"
-            >
-              <ShieldCheck size={16} /> Verify Pass
-            </motion.button>
+            <div className="flex items-center gap-2 text-emerald-400 text-xs font-black uppercase">
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></div>
+              Protected Session
+            </div>
           </div>
-
-          {/* Logout Button */}
-          
-        </motion.div>
+        </div>
       </motion.aside>
     </>
   );

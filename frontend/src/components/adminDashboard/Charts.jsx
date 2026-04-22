@@ -8,16 +8,18 @@ import {
   CartesianGrid,
   Legend,
 } from "recharts";
-import { motion } from "framer-motion"; // Import motion
+import { motion } from "framer-motion";
 
 // Custom tooltip for better UX
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-[#1e293b] p-3 rounded-lg border border-gray-700 shadow-lg">
-        <p className="text-white font-semibold">{label}</p>
-        <p className="text-sky-400">📊 Events: {payload[0].value}</p>
-        {/* <p className="text-purple-400">📝 Registrations: {payload[1].value}</p> */}
+      <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-[0_10px_40px_rgb(0,0,0,0.08)] backdrop-blur-md">
+        <p className="text-slate-900 font-black mb-1">{label}</p>
+        <p className="text-indigo-600 font-bold flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-indigo-600"></div>
+          Events: {payload[0].value}
+        </p>
       </div>
     );
   }
@@ -25,47 +27,62 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 const Charts = ({ categoryCounts, monthCounts }) => {
-  const chartVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-  };
-
   return (
     <motion.div
-      initial="hidden"
-      animate="visible"
-      variants={chartVariants}
-      transition={{ duration: 0.5, delay: 0.1 }}
-      className="bg-[#1e293b] p-6 rounded-xl shadow-lg"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.2 }}
+      className="bg-white p-8 rounded-[2.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 h-full flex flex-col"
     >
-      <motion.h3
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        className="text-lg font-semibold text-white mb-4"
-      >
-        Monthly Event Overview
-      </motion.h3>
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h3 className="text-xl font-black text-slate-900 tracking-tight">Monthly Performance</h3>
+          <p className="text-sm text-slate-500 font-medium">Event distribution across the platform</p>
+        </div>
+        <div className="p-3 bg-indigo-50 text-indigo-600 rounded-2xl">
+          <BarChart3 size={20} />
+        </div>
+      </div>
+
       {(!monthCounts || monthCounts.length === 0) ? (
-        <div className="text-center text-xl text-gray-400 h-64 flex items-center justify-center">No monthly event data available.</div>
+        <div className="flex-1 flex flex-col items-center justify-center text-slate-400 gap-3">
+          <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center shadow-inner">
+            <Activity size={24} className="opacity-20" />
+          </div>
+          <p className="font-bold uppercase text-[10px] tracking-widest">No data available yet</p>
+        </div>
       ) : (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-        >
-          <ResponsiveContainer width="100%" height={320}>
-            <BarChart data={monthCounts} barGap={8}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-              <XAxis dataKey="month" stroke="#94a3b8" />
-              <YAxis stroke="#94a3b8" />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend wrapperStyle={{ color: "#fff" }} />
-              <Bar dataKey="events" fill="#38bdf8" radius={[6, 6, 0, 0]} />
-              {/* <Bar dataKey="registrations" fill="#a78bfa" radius={[6, 6, 0, 0]} /> */}
+        <div className="flex-1 min-h-[300px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={monthCounts} barGap={12}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+              <XAxis 
+                dataKey="month" 
+                stroke="#64748b" 
+                fontSize={12} 
+                fontWeight={700}
+                axisLine={false}
+                tickLine={false}
+                tick={{ dy: 10 }}
+              />
+              <YAxis 
+                stroke="#64748b" 
+                fontSize={12} 
+                fontWeight={700}
+                axisLine={false}
+                tickLine={false}
+                tick={{ dx: -10 }}
+              />
+              <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f8fafc', radius: 12 }} />
+              <Bar 
+                dataKey="events" 
+                fill="#4f46e5" 
+                radius={[10, 10, 10, 10]} 
+                barSize={32}
+              />
             </BarChart>
           </ResponsiveContainer>
-        </motion.div>
+        </div>
       )}
     </motion.div>
   );

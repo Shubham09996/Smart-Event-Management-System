@@ -1,114 +1,119 @@
-import { Home, Layers, LogOut, ShieldCheck } from "lucide-react"; // Removed X icon
+import { Home, Layers, LogOut, ShieldCheck, LayoutDashboard, User2, Settings, QrCode } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
 const Sidebar = ({ active, setActivePage, setMobileSidebarOpen }) => {
   const navigate = useNavigate();
-  const NavItem = ({ icon: Icon, label, isActive, onClick }) => (
+
+  const NavItem = ({ icon: Icon, label, isActive, page }) => (
     <motion.div
-      whileHover={{ scale: 1.05, x: 5 }}
-      whileTap={{ scale: 0.95 }}
-      transition={{ type: "spring", stiffness: 400, damping: 10 }}
+      whileHover={{ x: 5 }}
+      whileTap={{ scale: 0.98 }}
       onClick={() => {
-        onClick();
-        setMobileSidebarOpen(false); // Close sidebar on navigation
+        navigate(`/organizer?page=${page}`);
+        setMobileSidebarOpen(false);
       }}
-      className={`flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-colors duration-200 ${
+      className={`flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all duration-300 relative group ${
         isActive
-          ? "bg-indigo-600/20 text-indigo-300"
-          : "text-slate-300 hover:bg-white/5 hover:text-white"
+          ? "bg-indigo-50 text-indigo-700 shadow-sm"
+          : "text-slate-500 hover:text-indigo-600 hover:bg-slate-50"
       }`}
     >
-      <Icon size={20} />
-      <span className="font-medium">{label}</span>
+      {isActive && (
+        <motion.div 
+          layoutId="active-pill-organizer"
+          className="absolute left-0 w-1 h-6 bg-indigo-600 rounded-r-full"
+        />
+      )}
+      <Icon size={20} className={`${isActive ? "text-indigo-600" : "text-slate-400 group-hover:text-indigo-500"} transition-colors`} />
+      <span className={`font-bold text-sm ${isActive ? "text-indigo-700" : "text-slate-600 group-hover:text-slate-900"} transition-colors`}>{label}</span>
     </motion.div>
   );
 
-  // ✅ Logout handler
   const handleLogout = () => {
-    localStorage.removeItem("token"); // agar token/session hai to clear
-    navigate('/login'); // ya tum jis page pe le jana chaho
-    setMobileSidebarOpen(false); // Close sidebar on logout
+    localStorage.removeItem("userInfo");
+    window.dispatchEvent(new Event('loginStateChange'));
+    navigate('/login');
+    setMobileSidebarOpen(false);
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full gap-8">
       {/* Logo */}
       <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6 }}
         className="flex items-center gap-3 px-2 py-3"
       >
-        <div className="h-9 w-9 rounded-xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-600/25">
-          <Home size={18} />
+        <div className="h-10 w-10 rounded-2xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-200">
+          <Home size={20} className="text-white" />
         </div>
         <div>
-          <motion.p
-            initial={{ opacity: 0, y: -5 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.4 }}
-            className="text-white font-semibold leading-tight"
-          >
-            SmartEvents
-          </motion.p>
-          <motion.p
-            initial={{ opacity: 0, y: -5 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.5 }}
-            className="text-[11px] text-slate-400 -mt-0.5"
-          >
-            Campus Edition
-          </motion.p>
+          <p className="text-slate-900 font-black text-xl leading-tight tracking-tight">SmartEvents</p>
+          <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest -mt-0.5">Organizer Suite</p>
         </div>
       </motion.div>
 
       {/* Navigation */}
-      <motion.nav
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.6 }}
-        className="mt-4 flex flex-col gap-2"
-      >
+      <nav className="flex flex-col gap-2">
+        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-4 mb-2">Management</p>
         <NavItem
-          icon={Home}
+          icon={LayoutDashboard}
           label="Dashboard"
           isActive={active === "dashboard"}
-          onClick={() => navigate("/organizer?page=dashboard")}
+          page="dashboard"
         />
         <NavItem
           icon={Layers}
-          label="Events"
+          label="My Events"
           isActive={active === "events"}
-          onClick={() => navigate("/organizer?page=events")}
+          page="events"
         />
-      </motion.nav>
+        <NavItem
+          icon={User2}
+          label="Organizer Profile"
+          isActive={active === "profile"}
+          page="profile"
+        />
+        <NavItem
+          icon={Settings}
+          label="Settings"
+          isActive={active === "settings"}
+          page="settings"
+        />
+      </nav>
 
       {/* Bottom Section */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, delay: 0.8 }}
+        transition={{ duration: 0.7, delay: 0.3 }}
         className="mt-auto"
       >
-        <div className="bg-gradient-to-br from-white/5 to-transparent rounded-2xl p-4 border border-white/5">
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.9 }}
-            className="text-sm text-slate-300"
+        <div className="bg-slate-50 rounded-[1.5rem] p-5 border border-slate-100 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-indigo-100/50 rounded-full blur-2xl -mr-10 -mt-10 transition-transform group-hover:scale-150 duration-700"></div>
+          
+          <p className="text-sm text-slate-600 font-medium relative z-10">
+            Easily verify guest passes using the QR scanner.
+          </p>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="mt-4 w-full flex items-center justify-center gap-2 text-sm bg-white border border-slate-200 hover:border-indigo-200 text-slate-700 font-bold py-2.5 rounded-xl transition shadow-sm hover:shadow-md relative z-10"
           >
-            Stay updated with campus events and workshops.
-          </motion.p>
+            <QrCode size={16} className="text-indigo-600" /> Scanner Help
+          </motion.button>
         </div>
 
         {/* Logout */}
         <motion.button
           whileHover={{ x: 5 }}
           onClick={handleLogout}
-          className="mt-4 flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition"
+          className="mt-6 flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:text-red-600 hover:bg-red-50 transition-all duration-300 group"
         >
-          <LogOut size={18} /> Logout
+          <LogOut size={18} className="text-slate-400 group-hover:text-red-500 transition-colors" />
+          <span className="font-bold text-sm">Logout</span>
         </motion.button>
       </motion.div>
     </div>

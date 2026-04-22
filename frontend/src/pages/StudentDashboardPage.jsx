@@ -135,15 +135,54 @@ const StudentDashboardPage = () => {
   };
 
   if (authLoading || loading) {
-    return <div className="flex min-h-screen bg-[#0b1220] text-white items-center justify-center text-xl">Loading student dashboard...</div>;
+    return (
+      <div className="flex min-h-screen bg-slate-50 items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-slate-600 font-medium">Loading your dashboard...</p>
+        </div>
+      </div>
+    );
   }
 
   if (!isAuthenticated) {
-    return <div className="flex min-h-screen bg-[#0b1220] text-white items-center justify-center text-xl text-red-500">Error: User not authenticated. Please log in.</div>;
+    return (
+      <div className="flex min-h-screen bg-slate-50 items-center justify-center p-4">
+        <div className="bg-white p-8 rounded-[2rem] shadow-xl border border-red-100 text-center max-w-md">
+          <div className="w-16 h-16 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <UserRound size={32} />
+          </div>
+          <h2 className="text-2xl font-bold text-slate-900 mb-2">Not Authenticated</h2>
+          <p className="text-slate-500 mb-6 font-medium">Please log in to access your student dashboard.</p>
+          <button 
+            onClick={() => navigate("/login")}
+            className="w-full py-3 bg-slate-900 text-white rounded-xl font-bold hover:bg-slate-800 transition-all"
+          >
+            Go to Login
+          </button>
+        </div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="flex min-h-screen bg-[#0b1220] text-white items-center justify-center text-xl text-red-500">Error: {error}</div>;
+    return (
+      <div className="flex min-h-screen bg-slate-50 items-center justify-center p-4">
+        <div className="bg-white p-8 rounded-[2rem] shadow-xl border border-red-100 text-center max-w-md">
+          <div className="w-16 h-16 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Bell size={32} />
+          </div>
+          <h2 className="text-2xl font-bold text-slate-900 mb-2">Something went wrong</h2>
+          <p className="text-slate-500 mb-6 font-medium">{error}</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition-all"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
   }
 
   const statsData = [
@@ -179,39 +218,43 @@ const StudentDashboardPage = () => {
 
   const StatCard = ({ title, value, change, icon: Icon, iconBg }) => (
     <motion.div
-      whileHover={{ scale: 1.03 }}
-      transition={{ type: "spring", stiffness: 400, damping: 10 }}
-      className="bg-[#1a1a24] p-5 rounded-xl shadow-lg border border-gray-700 flex flex-col justify-between h-full"
+      whileHover={{ y: -5, boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)" }}
+      className="bg-white p-6 rounded-2xl shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100 flex flex-col justify-between h-full group transition-all duration-300"
     >
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm text-gray-400 font-medium">{title}</h3>
-        <div className={`${iconBg} p-2 rounded-lg bg-opacity-30`}>
-          <Icon className="w-5 h-5 text-white" />
+      <div className="flex items-center justify-between mb-4">
+        <div className={`${iconBg.replace('bg-', 'text-')} ${iconBg} p-3 rounded-xl bg-opacity-10 flex items-center justify-center`}>
+          <Icon className="w-6 h-6" />
+        </div>
+        <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-slate-50 border border-slate-100">
+          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{change.split(' ')[1]}</span>
         </div>
       </div>
-      <div className="flex items-baseline justify-between">
-        <p className="text-3xl font-bold text-white">{value}</p>
-        <span className="text-green-400 text-xs">{change}</span>
+      <div>
+        <h3 className="text-sm text-slate-500 font-bold mb-1 uppercase tracking-tight">{title}</h3>
+        <div className="flex items-baseline gap-2">
+          <p className="text-3xl font-black text-slate-900">{value}</p>
+          <span className="text-indigo-600 text-xs font-bold">{change.split(' ')[0]}</span>
+        </div>
       </div>
     </motion.div>
   );
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
-      className="flex min-h-screen bg-[#0b1220] text-white"
+      className="flex min-h-screen bg-slate-50 text-slate-900"
     >
       {/* Sidebar */}
       <Sidebar active={activePage} />
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0">
         <Topbar />
 
         {/* Page Wrapper */}
-        <div className="p-6 space-y-6 overflow-y-auto">
+        <div className="p-4 md:p-8 space-y-8 overflow-y-auto max-w-[1600px] mx-auto w-full">
           <AnimatePresence mode="wait">
             {activePage === "dashboard" && (
               <motion.div
@@ -221,37 +264,54 @@ const StudentDashboardPage = () => {
                 animate="animate"
                 exit="exit"
                 transition={{ duration: 0.4 }}
-                className="space-y-6"
+                className="space-y-8"
               >
                 {/* Welcome Section */}
                 <motion.div
-                  initial={{ opacity: 0, y: -20 }}
+                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.1 }}
-                  className="flex items-center gap-4 bg-[#1f2937] p-5 rounded-2xl shadow-lg"
+                  transition={{ duration: 0.5 }}
+                  className="relative overflow-hidden bg-white p-6 md:p-10 rounded-[2.5rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100"
                 >
-                  <img
-                    src={currentUser?.profilePicture || "https://i.pravatar.cc/150?img=68"}
-                    alt="Profile"
-                    className="w-16 h-16 rounded-full object-cover border-2 border-indigo-500"
-                  />
-                  <div>
-                    <motion.h2
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.3 }}
-                      className="text-2xl font-bold text-white"
-                    >
-                      Hello, {currentUser?.name || "Student"}!
-                    </motion.h2>
-                    <motion.p
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.4 }}
-                      className="text-gray-400"
-                    >
-                      Welcome to your SmartEvents Dashboard.
-                    </motion.p>
+                  {/* Decorative background blurs */}
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-100/50 rounded-full blur-3xl -mr-32 -mt-32"></div>
+                  <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-100/50 rounded-full blur-3xl -ml-32 -mb-32"></div>
+                  
+                  <div className="relative z-10 flex flex-col md:flex-row items-center gap-6">
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-full blur-md opacity-20 scale-110"></div>
+                      <img
+src={currentUser?.profilePicture || `https://ui-avatars.com/api/?name=${currentUser?.name || "User"}&background=4f46e5&color=fff`}
+                        alt="Profile"
+                        className="w-24 h-24 md:w-28 md:h-28 rounded-full object-cover border-4 border-white shadow-xl relative z-10"
+                      />
+                    </div>
+                    <div className="text-center md:text-left">
+                      <motion.h2
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
+                        className="text-3xl md:text-4xl font-black text-slate-900 mb-2 tracking-tight"
+                      >
+                        Hello, {currentUser?.name?.split(' ')[0] || "Student"}! 👋
+                      </motion.h2>
+                      <motion.p
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, delay: 0.3 }}
+                        className="text-slate-500 font-medium text-lg max-w-md"
+                      >
+                        Welcome back! You have <span className="text-indigo-600 font-bold">{studentStats.availableEventsCount} new events</span> waiting for you today.
+                      </motion.p>
+                    </div>
+                    <div className="md:ml-auto flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                      <button 
+                        onClick={() => setActivePage("available-events")}
+                        className="px-6 py-3 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 transition-all shadow-lg shadow-slate-200"
+                      >
+                        Explore Events
+                      </button>
+                    </div>
                   </div>
                 </motion.div>
 

@@ -1,16 +1,18 @@
 import { useState } from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { motion, AnimatePresence } from "framer-motion";
-import { PlusCircle, Edit, Trash2, X } from "lucide-react";
-import api from "../../utils/api"; // Import the API instance
+import { PlusCircle, Edit, Trash2, X, Tags, BarChart3, AlertCircle } from "lucide-react";
+import api from "../../utils/api";
 
-// Custom tooltip
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-[#1e293b] p-3 rounded-lg border border-gray-700 shadow-lg">
-        <p className="text-white font-semibold">{payload[0].name}</p>
-        <p className="text-indigo-400">📊 {payload[0].value} events</p>
+      <div className="bg-white p-4 rounded-xl shadow-xl border border-slate-100 backdrop-blur-md">
+        <p className="text-slate-900 font-black mb-1">{payload[0].name}</p>
+        <p className="text-indigo-600 font-bold flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-indigo-600"></div>
+          {payload[0].value} Events
+        </p>
       </div>
     );
   }
@@ -19,410 +21,243 @@ const CustomTooltip = ({ active, payload }) => {
 
 const EventCategories = ({ categories, onCategoryCreated, onCategoryUpdated, onCategoryDeleted }) => {
   const [newCategoryName, setNewCategoryName] = useState("");
-  const [createLoading, setCreateLoading] = useState(false);
-  const [createError, setCreateError] = useState(null);
-  const [createSuccess, setCreateSuccess] = useState(false);
-
+  const [loadingAction, setLoadingAction] = useState(false);
+  const [error, setError] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
-  const [deleteLoading, setDeleteLoading] = useState(false);
-  const [deleteError, setDeleteError] = useState(null);
-
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
-  const [updateLoading, setUpdateLoading] = useState(false);
-  const [updateError, setUpdateError] = useState(null);
-  const [updateSuccess, setUpdateSuccess] = useState(false);
+
+  const getAuthHeader = () => {
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    return { headers: { Authorization: `Bearer ${userInfo?.token}` } };
+  };
 
   const handleCreateCategory = async (e) => {
     e.preventDefault();
-    setCreateLoading(true);
-    setCreateError(null);
-    setCreateSuccess(false);
-
+    setLoadingAction(true);
+    setError(null);
     try {
-      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      const token = userInfo ? userInfo.token : null;
-
-      if (!token) {
-        throw new Error("User not authenticated");
-      }
-
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      };
-
-      await api.post("/categories", { name: newCategoryName }, config);
-      setCreateSuccess(true);
+      await api.post("/categories", { name: newCategoryName }, getAuthHeader());
       setNewCategoryName("");
-      if (onCategoryCreated) {
-        onCategoryCreated();
-      }
+      if (onCategoryCreated) onCategoryCreated();
     } catch (err) {
-      setCreateError(err.response && err.response.data.message ? err.response.data.message : err.message);
+      setError(err.response?.data?.message || err.message);
     } finally {
-      setCreateLoading(false);
+      setLoadingAction(false);
     }
   };
 
   const handleDeleteCategory = async (id) => {
-    setDeleteLoading(true);
-    setDeleteError(null);
+    setLoadingAction(true);
+    setError(null);
     try {
-      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      const token = userInfo ? userInfo.token : null;
-
-      if (!token) {
-        throw new Error("User not authenticated");
-      }
-
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      await api.delete(`/categories/${id}`, config);
-      if (onCategoryDeleted) {
-        onCategoryDeleted();
-      }
+      await api.delete(`/categories/${id}`, getAuthHeader());
+      if (onCategoryDeleted) onCategoryDeleted();
       setDeleteId(null);
     } catch (err) {
-      setDeleteError(err.response && err.response.data.message ? err.response.data.message : err.message);
+      setError(err.response?.data?.message || err.message);
     } finally {
-      setDeleteLoading(false);
+      setLoadingAction(false);
     }
-  };
-
-  const handleEditClick = (category) => {
-    setEditingCategory(category);
-    setEditModalOpen(true);
   };
 
   const handleUpdateCategory = async (e) => {
     e.preventDefault();
-    setUpdateLoading(true);
-    setUpdateError(null);
-    setUpdateSuccess(false);
-
-    if (!editingCategory?.name) {
-      setUpdateError("Category name cannot be empty.");
-      setUpdateLoading(false);
-      return;
-    }
-
+    setLoadingAction(true);
+    setError(null);
     try {
-      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-      const token = userInfo ? userInfo.token : null;
-
-      if (!token) {
-        throw new Error("User not authenticated");
-      }
-
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      };
-
-      await api.put(`/categories/${editingCategory._id}`, { name: editingCategory.name }, config);
-      setUpdateSuccess(true);
+      await api.put(`/categories/${editingCategory._id}`, { name: editingCategory.name }, getAuthHeader());
       setEditModalOpen(false);
-      if (onCategoryUpdated) {
-        onCategoryUpdated();
-      }
+      if (onCategoryUpdated) onCategoryUpdated();
     } catch (err) {
-      setUpdateError(err.response && err.response.data.message ? err.response.data.message : err.message);
+      setError(err.response?.data?.message || err.message);
     } finally {
-      setUpdateLoading(false);
+      setLoadingAction(false);
     }
   };
 
-  // Dummy data for chart (we don't have actual event counts per category in backend yet)
+  const chartColors = [
+    "#4f46e5", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#ec4899", "#06b6d4"
+  ];
+
   const chartData = categories.map((cat, index) => ({
     name: cat.name,
-    value: 1, // Placeholder value
-    color: `hsl(${index * 60}, 70%, 50%)`, // Generate distinct colors
+    value: 1, // Placeholder
   }));
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: 0.1 }}
-      className="bg-[#1e293b] p-6 rounded-xl shadow-lg"
+      transition={{ duration: 0.5, delay: 0.3 }}
+      className="bg-white p-8 rounded-[2.5rem] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-slate-100"
     >
-      <motion.h3
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.3 }}
-        className="text-lg font-semibold text-white mb-4"
-      >
-        Event Categories Management
-      </motion.h3>
-      
-      {/* Create New Category */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.5 }}
-        className="mb-6 p-4 bg-[#111827] rounded-lg"
-      >
-        <h4 className="text-md font-medium text-white mb-2">Add New Category</h4>
-        <form onSubmit={handleCreateCategory} className="flex gap-3">
-          <input
-            type="text"
-            placeholder="New Category Name"
-            value={newCategoryName}
-            onChange={(e) => setNewCategoryName(e.target.value)}
-            required
-            className="flex-1 px-3 py-2 rounded-lg bg-gray-800 text-white outline-none border border-gray-700 focus:border-purple-500"
-          />
-          <motion.button
-            whileTap={{ scale: 0.95 }}
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            type="submit"
-            disabled={createLoading}
-            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium shadow-md disabled:opacity-50"
-          >
-            {createLoading ? "Adding..." : <PlusCircle size={18} />} {createLoading ? "Adding..." : "Add"}
-          </motion.button>
-        </form>
-        {createError && <p className="text-red-500 text-sm mt-2">Error: {createError}</p>}
-        {createSuccess && <p className="text-green-500 text-sm mt-2">Category created successfully!</p>}
-      </motion.div>
-
-      {/* Existing Categories List */}
-      <motion.h4
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.7 }}
-        className="text-md font-medium text-white mb-3"
-      >
-        Existing Categories
-      </motion.h4>
-      {categories.length === 0 ? (
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.9 }}
-          className="text-gray-400"
-        >
-          No categories found. Add some above!
-        </motion.p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {categories.map((category, index) => (
-            <motion.div
-              key={category._id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.9 + index * 0.05 }}
-              className="bg-[#111827] p-4 rounded-lg flex items-center justify-between shadow-sm"
-            >
-              <span className="text-white font-medium">{category.name}</span>
-              <div className="flex gap-2">
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                  onClick={() => handleEditClick(category)}
-                  className="p-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white transition"
-                >
-                  <Edit size={16} />
-                </motion.button>
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                  onClick={() => setDeleteId(category._id)}
-                  className="p-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition"
-                >
-                  <Trash2 size={16} />
-                </motion.button>
-              </div>
-            </motion.div>
-          ))}
+      <div className="flex items-center justify-between mb-10">
+        <div>
+          <h3 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+            Event Taxonomy
+            <span className="bg-indigo-100 text-indigo-600 text-xs px-3 py-1 rounded-full font-black uppercase tracking-widest">
+              {categories.length} Categories
+            </span>
+          </h3>
+          <p className="text-slate-500 font-medium italic">Manage interest tags and event classification</p>
         </div>
-      )}
+        <div className="p-3 bg-slate-50 text-slate-900 rounded-2xl">
+          <Tags size={20} />
+        </div>
+      </div>
 
-      {/* Category Delete Confirmation Modal */}
-      <AnimatePresence>
-        {deleteId && (
-          <motion.div
-            className="fixed inset-0 bg-black/60 flex items-center justify-center z-50"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              className="bg-[#1e293b] p-6 rounded-xl w-80 text-center"
-            >
-              <h3 className="text-white font-semibold mb-2">
-                Delete "{categories.find(cat => cat._id === deleteId)?.name}"?
-              </h3>
-              <p className="text-gray-400 text-sm mb-4">
-                This action cannot be undone.
-              </p>
-              {deleteError && <p className="text-red-500 text-sm mb-2">Error: {deleteError}</p>}
-              <div className="flex justify-center gap-3">
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                  onClick={() => setDeleteId(null)}
-                  className="px-4 py-2 rounded-lg bg-gray-600 hover:bg-gray-500 text-white"
-                >
-                  Cancel
-                </motion.button>
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                  onClick={() => handleDeleteCategory(deleteId)}
-                  disabled={deleteLoading}
-                  className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white disabled:opacity-50"
-                >
-                  {deleteLoading ? "Deleting..." : "Delete"}
-                </motion.button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Category Edit Modal */}
-      <AnimatePresence>
-        {editModalOpen && editingCategory && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/75 z-40 flex items-center justify-center"
-            onClick={() => setEditModalOpen(false)}
-          >
-            <motion.div
-              initial={{ opacity: 0, y: 80, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 80, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-              className="relative w-full max-w-lg rounded-2xl shadow-2xl p-6 bg-[#1e293b] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                onClick={() => setEditModalOpen(false)}
-                className="absolute top-3 right-3 text-gray-400 hover:text-white"
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        {/* Left Side: Management */}
+        <div className="space-y-10">
+          {/* Add New */}
+          <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100 shadow-inner">
+            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 ml-2 text-center lg:text-left">Initialize New Category</h4>
+            <form onSubmit={handleCreateCategory} className="flex gap-3">
+              <input
+                type="text"
+                placeholder="Category identification..."
+                value={newCategoryName}
+                onChange={(e) => setNewCategoryName(e.target.value)}
+                required
+                className="flex-1 px-6 py-4 rounded-2xl bg-white border border-transparent focus:border-indigo-100 outline-none transition-all font-bold text-slate-900 shadow-sm"
+              />
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                type="submit"
+                disabled={loadingAction}
+                className="px-6 bg-indigo-600 text-white rounded-2xl font-black shadow-lg shadow-indigo-600/20 hover:bg-indigo-700 transition-all disabled:opacity-50"
               >
-                <X size={20} />
-              </button>
-              <motion.h2
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.1 }}
-                className="text-xl font-semibold text-white mb-4"
+                {loadingAction ? "..." : <PlusCircle size={22} />}
+              </motion.button>
+            </form>
+            {error && <p className="text-red-500 text-[10px] font-black uppercase mt-3 ml-2 tracking-widest">{error}</p>}
+          </div>
+
+          {/* List */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {categories.map((category, index) => (
+              <motion.div
+                key={category._id}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.05 }}
+                className="group flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl hover:border-indigo-100 hover:shadow-md transition-all duration-300"
               >
-                Edit Category
-              </motion.h2>
-              <form onSubmit={handleUpdateCategory} className="space-y-4">
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Category Name"
-                  value={editingCategory.name}
-                  onChange={(e) => setEditingCategory({ ...editingCategory, name: e.target.value })}
-                  required
-                  className="w-full p-3 rounded-lg bg-gray-800 text-white outline-none border border-gray-700 focus:border-purple-500"
-                />
+                <div className="flex items-center gap-3">
+                  <div className="w-1.5 h-6 rounded-full bg-slate-200 group-hover:bg-indigo-500 transition-colors"></div>
+                  <span className="text-slate-900 font-bold tracking-tight">{category.name}</span>
+                </div>
+                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button onClick={() => { setEditingCategory(category); setEditModalOpen(true); }} className="p-2 text-slate-400 hover:text-indigo-600 transition-colors">
+                    <Edit size={16} />
+                  </button>
+                  <button onClick={() => setDeleteId(category._id)} className="p-2 text-slate-400 hover:text-red-500 transition-colors">
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
 
-                {updateError && <p className="text-red-500 text-sm mt-2">Error: {updateError}</p>}
-                {updateSuccess && <p className="text-green-500 text-sm mt-2">Category updated successfully!</p>}
-
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                  type="submit"
-                  disabled={updateLoading}
-                  className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-medium shadow-md disabled:opacity-50"
-                >
-                  {updateLoading ? "Updating..." : "Update Category"}
-                </motion.button>
-              </form>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Pie Chart (using dummy data for now, update with real counts if backend provides) */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.7 }}
-        className="mt-10 bg-[#111827] p-6 rounded-xl shadow-lg"
-      >
-        <div className="flex flex-col md:flex-row items-center gap-6">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.9 }}
-            className="w-full md:w-2/3 h-64"
-          >
-            <ResponsiveContainer>
+        {/* Right Side: Analytics */}
+        <div className="bg-slate-50 p-8 rounded-[2.5rem] border border-slate-100 shadow-inner flex flex-col justify-center min-h-[400px]">
+          <div className="text-center mb-6">
+            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Density Analytics</h4>
+            <p className="text-xs text-slate-500 font-medium italic">Category distribution across system</p>
+          </div>
+          
+          <div className="h-64 relative">
+            <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={chartData}
                   cx="50%"
                   cy="50%"
-                  outerRadius={100}
+                  innerRadius={60}
+                  outerRadius={80}
+                  paddingAngle={8}
                   dataKey="value"
-                  labelLine={false}
-                  label={({ name, percent }) =>
-                    `${name} ${(percent * 100).toFixed(0)}%`
-                  }
                 >
                   {chartData.map((entry, index) => (
-                    <Cell key={index} fill={entry.color} />
+                    <Cell key={`cell-${index}`} fill={chartColors[index % chartColors.length]} strokeWidth={0} />
                   ))}
                 </Pie>
                 <Tooltip content={<CustomTooltip />} />
               </PieChart>
             </ResponsiveContainer>
-          </motion.div>
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="text-center bg-white w-20 h-20 rounded-full flex flex-col items-center justify-center shadow-lg border border-slate-50">
+                <BarChart3 size={24} className="text-indigo-600 mb-0.5" />
+                <span className="text-[10px] font-black text-slate-400 uppercase">Growth</span>
+              </div>
+            </div>
+          </div>
 
-          {/* Custom Legend */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 1.1 }}
-            className="flex flex-col gap-3"
-          >
-            {chartData.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3, delay: 1.1 + index * 0.1 }}
-                className="flex items-center gap-2"
-              >
-                <div
-                  className="w-4 h-4 rounded-full"
-                  style={{ backgroundColor: item.color }}
-                ></div>
-                <span className="text-white text-sm font-medium">
-                  {item.name} ({item.value} events)
-                </span>
-              </motion.div>
+          <div className="mt-8 grid grid-cols-2 gap-3">
+            {chartData.slice(0, 4).map((item, index) => (
+              <div key={index} className="flex items-center gap-2 px-3 py-2 bg-white rounded-xl shadow-sm border border-slate-50">
+                <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: chartColors[index % chartColors.length] }}></div>
+                <span className="text-[10px] font-bold text-slate-600 truncate uppercase tracking-widest">{item.name}</span>
+              </div>
             ))}
-          </motion.div>
+          </div>
         </div>
-      </motion.div>
+      </div>
+
+      {/* Delete Confirmation Modal */}
+      <AnimatePresence>
+        {deleteId && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setDeleteId(null)} className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" />
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative bg-white p-8 rounded-[2.5rem] w-full max-w-sm shadow-2xl text-center">
+              <div className="w-20 h-20 bg-red-50 text-red-500 rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-inner">
+                <AlertCircle size={32} />
+              </div>
+              <h3 className="text-xl font-black text-slate-900 mb-2">Delete Category?</h3>
+              <p className="text-slate-500 font-medium mb-8 leading-relaxed italic">All events under this tag will be reclassified as "General".</p>
+              <div className="flex gap-3">
+                <button onClick={() => setDeleteId(null)} className="flex-1 py-4 bg-slate-100 text-slate-600 font-black rounded-2xl hover:bg-slate-200 transition-colors">Abort</button>
+                <button onClick={() => handleDeleteCategory(deleteId)} disabled={loadingAction} className="flex-1 py-4 bg-red-500 text-white font-black rounded-2xl shadow-lg shadow-red-500/20 hover:bg-red-600 transition-colors disabled:opacity-50">Destroy</button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Edit Category Modal */}
+      <AnimatePresence>
+        {editModalOpen && editingCategory && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setEditModalOpen(false)} className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" />
+            <motion.div initial={{ scale: 0.9, opacity: 0, y: 50 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 50 }} className="relative bg-white p-10 rounded-[3rem] w-full max-w-md shadow-2xl">
+              <button onClick={() => setEditModalOpen(false)} className="absolute top-8 right-8 text-slate-400 hover:text-slate-900 p-2"><X size={24} /></button>
+              <div className="mb-10 text-center">
+                <div className="w-24 h-24 bg-indigo-50 text-indigo-600 rounded-[2.5rem] flex items-center justify-center mx-auto mb-6 shadow-inner"><Edit size={32} /></div>
+                <h2 className="text-3xl font-black text-slate-900 tracking-tight">Refactor Brand</h2>
+                <p className="text-slate-500 font-medium italic">Update category identification settings</p>
+              </div>
+              <form onSubmit={handleUpdateCategory} className="space-y-6">
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest ml-4 mb-2">Category Label</label>
+                  <input
+                    type="text"
+                    value={editingCategory.name}
+                    onChange={(e) => setEditingCategory({ ...editingCategory, name: e.target.value })}
+                    className="w-full px-6 py-4 rounded-[1.5rem] bg-slate-50 border border-transparent focus:bg-white focus:border-indigo-100 outline-none transition-all font-bold text-slate-900 text-lg shadow-inner"
+                    placeholder="Category Name"
+                  />
+                </div>
+                <div className="pt-4">
+                  <button type="submit" disabled={loadingAction} className="w-full py-5 bg-indigo-600 text-white font-black rounded-[1.5rem] shadow-lg shadow-indigo-600/20 hover:bg-indigo-700 transition-all text-lg uppercase tracking-widest disabled:opacity-50">Save Changes</button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };
