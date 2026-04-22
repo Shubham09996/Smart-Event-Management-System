@@ -299,16 +299,9 @@ const OrganizerDashboardPage = () => {
                 animate="animate"
                 exit="exit"
                 transition={{ duration: 0.4 }}
-                className="bg-[#111827] rounded-2xl p-6 shadow-md"
+                className=""
               >
-                <motion.h2
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.1 }}
-                  className="text-2xl font-bold mb-4"
-                >
-                  Manage Your Events
-                </motion.h2>
+                {/* Removed duplicate heading Header since ManageEvents has its own */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}

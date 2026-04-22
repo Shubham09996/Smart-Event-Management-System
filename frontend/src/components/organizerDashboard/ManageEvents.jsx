@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar, MapPin, Edit, Trash, X, Upload, Clock, QrCode, Download } from "lucide-react";
+import { Calendar, MapPin, Edit, Trash, X, Upload, Clock, QrCode, Download, BarChart2 } from "lucide-react";
 import api from "../../utils/api";
 import { useAuth } from "../../context/AuthContext";
 import ScannerModal from "./ScannerModal";
+import EventAnalyticsModal from "./EventAnalyticsModal";
 
 const ManageEvents = ({ events, onEventDeleted, onEventUpdated }) => {
   const { user, isAuthenticated } = useAuth();
@@ -21,6 +22,9 @@ const ManageEvents = ({ events, onEventDeleted, onEventUpdated }) => {
   const [categoriesError, setCategoriesError] = useState(null);
   const [scannerOpen, setScannerOpen] = useState(false);
   const [activeScanEventId, setActiveScanEventId] = useState(null);
+  const [analyticsOpen, setAnalyticsOpen] = useState(false);
+  const [activeAnalyticsEvent, setActiveAnalyticsEvent] = useState(null);
+
   useEffect(() => {
     const fetchCategories = async () => {
       setCategoriesLoading(true);
@@ -202,6 +206,16 @@ const ManageEvents = ({ events, onEventDeleted, onEventUpdated }) => {
                        {event.category?.name || event.category || "General"}
                     </div>
                     <div className="flex gap-2">
+                       {/* Analytics Dashboard Button */}
+                       <motion.button
+                         whileHover={{ scale: 1.1 }}
+                         whileTap={{ scale: 0.9 }}
+                         onClick={() => { setActiveAnalyticsEvent(event); setAnalyticsOpen(true); }}
+                         className="p-2.5 rounded-xl bg-slate-50 text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-all border border-slate-100"
+                         title="View Analytics Dashboard"
+                       >
+                         <BarChart2 size={18} />
+                       </motion.button>
                        <motion.button
                          whileHover={{ scale: 1.1 }}
                          whileTap={{ scale: 0.9 }}
@@ -475,6 +489,12 @@ const ManageEvents = ({ events, onEventDeleted, onEventUpdated }) => {
         isOpen={scannerOpen} 
         onClose={() => setScannerOpen(false)} 
         eventId={activeScanEventId} 
+      />
+
+      <EventAnalyticsModal 
+        isOpen={analyticsOpen} 
+        onClose={() => setAnalyticsOpen(false)} 
+        event={activeAnalyticsEvent} 
       />
     </motion.div>
   );

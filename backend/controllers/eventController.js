@@ -66,7 +66,7 @@ const getEventById = asyncHandler(async (req, res) => {
 // @route   POST /api/events
 // @access  Private/Organizer
 const createEvent = asyncHandler(async (req, res) => {
-  const { title, description, date, startTime, endTime, location, category, eventImage } = req.body;
+  const { title, description, date, startTime, endTime, location, category, eventImage, isPaid, ticketPrice, capacity } = req.body;
 
   let uploadedImageUrl = eventImage;
   if (eventImage && eventImage.startsWith('data:image')) {
@@ -85,6 +85,9 @@ const createEvent = asyncHandler(async (req, res) => {
     category,
     isApproved: false, // New events need admin approval
     eventImage: uploadedImageUrl || "https://via.placeholder.com/400x200?text=Event+Image",
+    isPaid: isPaid || false,
+    ticketPrice: ticketPrice || 0,
+    capacity: capacity || 0,
   });
 
   const createdEvent = await event.save();
@@ -95,7 +98,7 @@ const createEvent = asyncHandler(async (req, res) => {
 // @route   PUT /api/events/:id
 // @access  Private/Organizer
 const updateEvent = asyncHandler(async (req, res) => {
-  const { title, description, date, startTime, endTime, location, category, eventImage } = req.body;
+  const { title, description, date, startTime, endTime, location, category, eventImage, isPaid, ticketPrice, capacity } = req.body;
 
   const event = await Event.findById(req.params.id);
 
@@ -113,6 +116,10 @@ const updateEvent = asyncHandler(async (req, res) => {
     event.endTime = endTime || event.endTime;
     event.location = location || event.location;
     event.category = category || event.category;
+    
+    if (isPaid !== undefined) event.isPaid = isPaid;
+    if (ticketPrice !== undefined) event.ticketPrice = ticketPrice;
+    if (capacity !== undefined) event.capacity = capacity;
 
     // Handle event image update
     let updatedEventImage = eventImage;
