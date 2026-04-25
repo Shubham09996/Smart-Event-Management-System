@@ -34,7 +34,7 @@ export default function HowItWorks() {
           className="text-center mb-16"
         >
           <span className="text-sm font-bold text-indigo-600 tracking-wider uppercase mb-2 block">Simple Process</span>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900">How SmartEvents Works</h2>
+          <h2 className="text-3xl md:text-5xl font-extrabold text-slate-900">How CampusSync Works</h2>
           <p className="mt-4 text-slate-600 max-w-2xl mx-auto text-lg hover:text-slate-800 transition">
             Designed for students and organizers alike. Get started in minutes.
           </p>

@@ -33,7 +33,7 @@ export default function CtaSection() {
             </h2>
             
             <p className="text-lg md:text-xl text-slate-300 mb-10 max-w-2xl leading-relaxed">
-              Join thousands of students and organizers who are already using SmartEvents to discover and host incredible experiences.
+              Join thousands of students and organizers who are already using CampusSync to discover and host incredible experiences.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">

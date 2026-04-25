@@ -67,7 +67,7 @@ const Sidebar = ({ active, setActivePage, setMobileSidebarOpen }) => {
         </div>
         {!isCollapsed && (
           <div className="overflow-hidden whitespace-nowrap">
-            <p className="text-slate-900 font-black text-xl leading-tight tracking-tight">SmartEvents</p>
+            <p className="text-slate-900 font-black text-xl leading-tight tracking-tight">CampusSync</p>
             <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest -mt-0.5">Organizer Suite</p>
           </div>
         )}

@@ -18,7 +18,7 @@ export default function Footer() {
                 <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
                   <span className="text-white text-base">✨</span>
                 </div>
-                SmartEvents
+                CampusSync
               </span>
             </Link>
             <p className="text-slate-500 text-sm leading-relaxed max-w-sm mb-8">
@@ -94,7 +94,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-slate-400 text-sm">
-            © {new Date().getFullYear()} SmartEvents. All rights reserved.
+            © {new Date().getFullYear()} CampusSync. All rights reserved.
           </p>
           <div className="flex items-center gap-2 text-sm text-slate-400">
             <span>Made with</span>

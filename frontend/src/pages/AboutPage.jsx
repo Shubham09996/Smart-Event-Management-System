@@ -66,7 +66,7 @@ export default function AboutPage() {
             </h1>
             
             <p className="text-lg md:text-xl text-slate-600 font-medium max-w-2xl mx-auto mb-12">
-              SmartEvents is more than an app—it's a vision to eliminate the friction between great ideas and unforgettable events.
+              CampusSync is more than an app—it's a vision to eliminate the friction between great ideas and unforgettable events.
             </p>
           </motion.div>
         </div>
@@ -132,7 +132,7 @@ export default function AboutPage() {
               Shubham Gupta
             </h2>
             <p className="text-slate-400 text-lg md:text-xl font-medium leading-relaxed mb-8 max-w-2xl">
-              "Building SmartEvents was driven by a single goal: to simplify campus life for students and organizers alike. 
+              "Building CampusSync was driven by a single goal: to simplify campus life for students and organizers alike. 
               As the sole architect, I've poured every ounce of innovation into creating a platform that is as reliable as it is beautiful."
             </p>
             

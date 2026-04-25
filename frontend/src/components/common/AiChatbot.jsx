@@ -8,7 +8,7 @@ const AiChatbot = () => {
   const { user, isAuthenticated } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { role: 'assistant', text: "Hi! I'm your SmartEvents Assistant. How can I help you today?" }
+    { role: 'assistant', text: "Hi! I'm your CampusSync Assistant. How can I help you today?" }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);

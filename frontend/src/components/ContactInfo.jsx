@@ -5,8 +5,8 @@ export default function ContactInfo() {
   const details = [
     {
       label: "Email",
-      value: "support@smartevents.edu",
-      href: "mailto:support@smartevents.edu",
+      value: "support@CampusSync.edu",
+      href: "mailto:support@CampusSync.edu",
       icon: Mail,
       color: "bg-indigo-50",
       iconColor: "text-indigo-600",

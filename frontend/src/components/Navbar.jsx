@@ -101,7 +101,7 @@ export default function Navbar() {
             <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
               <span className="text-white text-base">✨</span>
             </div>
-            SmartEvents
+            CampusSync
           </span>
         </motion.div>
       </Link>

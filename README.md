@@ -6,7 +6,7 @@
   <br />
   <br />
 
-  <h1>🎉 Smart Event & Exam Management System 🎓</h1>
+  <h1>🎉 CampusSync 🎓</h1>
   <p>
     <strong>A Next-Generation, Full-Stack Platform for Campus Events, Exams, and Seamless Institutional Management.</strong>
   </p>
@@ -16,7 +16,7 @@
 
 ## 🌟 Overview
 
-The **Smart Event & Exam Management System** is a premium, production-ready full-stack application designed to revolutionize how educational institutions manage events, track student attendance, and coordinate examinations. Built with a highly responsive, modern, and aesthetically pleasing UI/UX, it offers robust capabilities for multiple user roles, from Students to Event Organizers and Administrators.
+The **CampusSync** is a premium, production-ready full-stack application designed to revolutionize how educational institutions manage events, track student attendance, and coordinate examinations. Built with a highly responsive, modern, and aesthetically pleasing UI/UX, it offers robust capabilities for multiple user roles, from Students to Event Organizers and Administrators.
 
 Combining state-of-the-art technologies with an elegant design system (Mesh gradients, 3D interactive cards, smooth micro-animations), this platform stands out as a "next-level" solution for modern campuses.
 

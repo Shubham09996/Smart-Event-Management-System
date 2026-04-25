@@ -10,7 +10,7 @@ const sendEmail = async (options) => {
   });
 
   const mailOptions = {
-    from: 'support.SmartEvents@gmail.com', // Sender address
+    from: 'support.CampusSync@gmail.com', // Sender address
     to: options.email,
     subject: options.subject,
     html: options.message,
