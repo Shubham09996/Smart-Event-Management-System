@@ -13,6 +13,7 @@ import AvailableEvents from "../components/studentDashboard/AvailableEvents";
 import RegisteredEvents from "../components/studentDashboard/RegisteredEvents";
 import Notifications from "../components/studentDashboard/Notifications";
 import StudentProfile from "../components/studentDashboard/StudentProfile";
+import StudentDatesheet from "../components/studentDashboard/StudentDatesheet";
 // import StatsCards from "../components/organizerDashboard/StatsCards"; // We will create a new one for student
 
 const StudentDashboardPage = () => {
@@ -393,6 +394,19 @@ src={currentUser?.profilePicture || `https://ui-avatars.com/api/?name=${currentU
                 transition={{ duration: 0.4 }}
               >
                 <RegisteredEvents events={registeredEvents} />
+              </motion.div>
+            )}
+
+            {activePage === "datesheet" && (
+              <motion.div
+                key="datesheet"
+                variants={pageVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.4 }}
+              >
+                <StudentDatesheet />
               </motion.div>
             )}
 

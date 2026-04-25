@@ -1,4 +1,4 @@
-import { Home, Layers, LogOut, ShieldCheck, LayoutDashboard, User2, Settings, QrCode, ChevronLeft, ChevronRight } from "lucide-react";
+import { Home, Layers, LogOut, ShieldCheck, LayoutDashboard, User2, Settings, QrCode, ChevronLeft, ChevronRight, BookOpen } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -87,6 +87,12 @@ const Sidebar = ({ active, setActivePage, setMobileSidebarOpen }) => {
           label="My Events"
           isActive={active === "events"}
           page="events"
+        />
+        <NavItem
+          icon={BookOpen}
+          label="Manage Exams"
+          isActive={active === "exams"}
+          page="exams"
         />
         <NavItem
           icon={User2}

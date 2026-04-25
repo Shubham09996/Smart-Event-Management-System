@@ -1,4 +1,4 @@
-import { Home, Layers, User2, Settings, LogOut, ShieldCheck, LayoutDashboard, Bell, CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
+import { Home, Layers, User2, Settings, LogOut, ShieldCheck, LayoutDashboard, Bell, CalendarDays, ChevronLeft, ChevronRight, BookOpen } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
@@ -92,6 +92,12 @@ const Sidebar = ({ active, setMobileSidebarOpen }) => {
           label="My Registrations"
           isActive={active === "registered-events"}
           page="registered-events"
+        />
+        <NavItem
+          icon={BookOpen}
+          label="Datesheet & Syllabus"
+          isActive={active === "datesheet"}
+          page="datesheet"
         />
         <NavItem
           icon={Bell}

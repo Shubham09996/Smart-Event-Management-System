@@ -13,6 +13,8 @@ import CreateEventCard from "../components/organizerDashboard/CreateEventCard";
 import ManageEvents from "../components/organizerDashboard/ManageEvents";
 import OrganizerProfile from "../components/organizerDashboard/OrganizerProfile";
 import ScannerModal from "../components/organizerDashboard/ScannerModal";
+import CreateExamCard from "../components/organizerDashboard/CreateExamCard";
+import ManageExams from "../components/organizerDashboard/ManageExams";
 
 const OrganizerDashboardPage = () => {
   const { user, isAuthenticated, loading: authLoading } = useAuth();
@@ -309,6 +311,23 @@ const OrganizerDashboardPage = () => {
                 >
                   <ManageEvents events={events} onEventDeleted={handleEventDeleted} onEventUpdated={handleEventUpdated} />
                 </motion.div>
+              </motion.div>
+            )}
+
+            {activePage === "exams" && (
+              <motion.div
+                key="exams"
+                variants={pageVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.4 }}
+                className=""
+              >
+                <div className="mb-8">
+                  <CreateExamCard />
+                </div>
+                <ManageExams refreshTrigger={null} />
               </motion.div>
             )}
 
